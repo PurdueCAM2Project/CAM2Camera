@@ -304,7 +304,6 @@ class API_View_Tests(APITestCase):
     #Test Case N1 - Wrong Camera ID to get Test
     def test_post_get_case_N1(self): 
         print('case_N1')
-        print('URL:',os.environ['DATABASE_URL'])
         client = APIClient()
         response = self.client.post('/cameras.json/', self.data_N1,  format = 'json')
         self.assertEqual(response.status_code, 200)
