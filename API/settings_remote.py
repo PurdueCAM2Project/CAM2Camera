@@ -1,7 +1,7 @@
 """
 Django settings for API project.
 Specific settings are imported other setting libraries for better
-control. 
+control.
 """
 import dj_database_url
 import os
@@ -12,10 +12,11 @@ print("Imported Remote Settings......")
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR =  os.path.dirname(PROJECT_ROOT)
+BASE_DIR = os.path.dirname(PROJECT_ROOT)
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# To add secret key variable to Heroku Deployment use "heroku config:add DJANGO_SECRET_KEY=<your secret key>" 
+# To add secret key variable to Heroku Deployment use "heroku
+# config:add DJANGO_SECRET_KEY=<your secret key>"
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
@@ -25,7 +26,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
 
 # # Using white noise to collect static files on production
-# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage' 
+# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # # Static asset configuration
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -35,7 +36,7 @@ SECURE_SSL_REDIRECT = True
 #     os.path.join(BASE_DIR, 'API/static/api-view'),
 #     os.path.join(BASE_DIR, 'API/static'),
 # )
-# WHITENOISE_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'root') 
+# WHITENOISE_ROOT = os.path.join(BASE_DIR, 'staticfiles', 'root')
 
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_URL = '/static/'
@@ -59,7 +60,7 @@ DATABASES = {
     'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
 }
 # Add PostGIS engine
-DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis' 
+DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 ALLOWED_HOSTS = ["*"]
 
