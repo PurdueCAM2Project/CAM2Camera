@@ -53,7 +53,7 @@ class API_View_Tests(APITestCase):
         #Data for Test Case C1 - Correct IP Camera Test
         self.data_C1 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': "192.168.1.1", 'port': 8000,  'camera_id': 8000}
         #Data for Test Case C2 - Correct Non IP Camera Test
-        self.data_C2 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'www.test.com', 'camera_id': 8001}
+        self.data_C2 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'http://www.test.com', 'camera_id': 8001}
 
 
     #Missing Information Test
@@ -68,16 +68,16 @@ class API_View_Tests(APITestCase):
         self.data_E3 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080,  'camera_id': 8004}
 
         #Data for Test Case E4 - Wrong Camera With URL and IP Test
-        self.data_E4 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'www.test.com', 'ip': "192.168.1.1",  'camera_id': 8005}
+        self.data_E4 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'http://www.test.com', 'ip': "192.168.1.1",  'camera_id': 8005}
 
         #Data for Test Case E5 - Wrong Camera Without URL and IP Test
         self.data_E5 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080,  'camera_id': 8006}
 
         #Data for Test Case E6 - Wrong Non IP Camera With URL and PORT Test
-        self.data_E6 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'www.test.com', 'port': 8000,  'camera_id': 8007}
+        self.data_E6 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'http://www.test.com', 'port': 8000,  'camera_id': 8007}
 
         #Data for Test Case E7 - Wrong Camera With URL,  IP and PORT Test
-        self.data_E7 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'www.test.com', 'ip': "192.168.1.1", 'port': 8000,  'camera_id': 8008}
+        self.data_E7 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': 'http://www.test.com', 'ip': "192.168.1.1", 'port': 8000,  'camera_id': 8008}
 
         #Data for Test Case E8 - Wrong Camera Without ID Test
         self.data_E8 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': "192.168.1.1", 'port': 8009}
@@ -169,13 +169,12 @@ class API_View_Tests(APITestCase):
     def test_post_get_case_E4(self): 
         print('case_E4')
         client = APIClient()
-        try: 
-            response = self.client.post('/cameras.json/', self.data_E4,  format = 'json')
-            self.assertEqual(response.status_code, 404)
-        except Exception as ex: 
-            template = "An exception of type {0} occurred. Arguments: \n{1!r}"
-            message = template.format(type(ex).__name__,  ex.args)
-            print(message)
+        response = self.client.post('/cameras.json/', self.data_E4,  format = 'json')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/cameras/8005/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['city'],  'Shinjuku-ku')  
+
 
 
     #Test Case E5 - Wrong Camera Without URL and IP Test
@@ -193,26 +192,22 @@ class API_View_Tests(APITestCase):
     def test_post_get_case_E6(self): 
         print('case_E6')
         client = APIClient()
-        try: 
-            response = self.client.post('/cameras.json/', self.data_E6,  format = 'json')
-            self.assertEqual(response.status_code, 404)
-        except Exception as ex: 
-            template = "An exception of type {0} occurred. Arguments: \n{1!r}"
-            message = template.format(type(ex).__name__,  ex.args)
-            print(message)
+        response = self.client.post('/cameras.json/', self.data_E6,  format = 'json')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/cameras/8007/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['city'],  'Shinjuku-ku')  
 
 
     #Test Case E7 - Wrong Camera With URL,  IP and PORT Test
     def test_post_get_case_E7(self): 
         print('case_E7')
         client = APIClient()
-        try: 
-            response = self.client.post('/cameras.json/', self.data_E7,  format = 'json')
-            self.assertEqual(response.status_code, 404)
-        except Exception as ex: 
-            template = "An exception of type {0} occurred. Arguments: \n{1!r}"
-            message = template.format(type(ex).__name__,  ex.args)
-            print(message)
+        response = self.client.post('/cameras.json/', self.data_E7,  format = 'json')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/cameras/8008/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['city'],  'Shinjuku-ku')  
 
 
     #Test Case E8 - Wrong Camera Without ID Test
@@ -230,13 +225,11 @@ class API_View_Tests(APITestCase):
     def test_post_get_case_E9(self): 
         print('case_E9')
         client = APIClient()
-        try: 
-            response = self.client.post('/cameras.json/', self.data_E9,  format = 'json')
-            self.assertEqual(response.status_code, 404)
-        except Exception as ex: 
-            template = "An exception of type {0} occurred. Arguments: \n{1!r}"
-            message = template.format(type(ex).__name__,  ex.args)
-            print(message)
+        response = self.client.post('/cameras.json/', self.data_E9,  format = 'json')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/cameras/8010/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['city'],  'Shinjuku-ku')  
 
     #Test Case E10 - Correct Camera Without state Test
     def test_post_get_case_E10(self): 

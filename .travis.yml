@@ -1,0 +1,9 @@
+language: python
+python:
+- '3.6'
+dist: trusty
+install:
+- pip install -r requirements.txt
+script:
+- travis_retry python manage.py test
+cache: pip
