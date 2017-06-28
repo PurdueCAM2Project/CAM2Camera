@@ -8,25 +8,15 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 
 class CameraList(APIView):
-	"""
-	Returns:
-		GET - JSON response containing all the camera data in the database
-		POST - Creates new camera objects in the database
-	"""
-	def get(self, request, format=None):
-		"""
-		Returns JSON response containing all the camera data in the database
-		input request: HTTP GET request
-		input format: optional format string included in HTTP request
-		return: JSON String
-		"""
-		cameras = Camera.objects.all()
-		serializer = CameraSerializer(cameras, many=True)
+
+	def get(self, request):
+		filtered_cameras = filter_cameras(self.request.query_params)
+		serializer = CameraSerializer(filtered_cameras, many=True)
 		return Response(serializer.data)
 
 	def post(self, request, format=None):
@@ -37,7 +27,7 @@ class CameraList(APIView):
 			serializer.save()
 			print("Data added")
 			return Response(serializer.data)
-		else:	
+		else:
 			print("Data not added")
 			return Response(serializer.errors)
 
@@ -118,3 +108,16 @@ class CameraDetail(APIView):
 		retrieval_model_delete.delete()
 		camera.delete()
 		return(Response(status=status.HTTP_204_NO_CONTENT))
+
+def filter_cameras(query_params):
+	result = Camera.objects.all()
+	for param in query_params:
+		if param == "city":
+			result = result.filter(city=query_params[param])
+		elif param == "state":
+			result = result.filter(state=query_params[param])
+		elif param == "country":
+			result = result.filter(country=query_params[param])
+		elif param == "camera_type":
+			result = result.filter(camera_type=query_params[param])
+	return result 
