@@ -58,6 +58,7 @@ GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
 
 #For Travis Testing DataBase
 if 'TRAVIS' in os.environ:
+	print("Import TRAVIS Setting")
 	DATABASES = {
     	'default': {
     	    'ENGINE': 'django.contrib.gis.db.backends.postgis',
@@ -69,13 +70,17 @@ if 'TRAVIS' in os.environ:
     	}
 	}
 	STATIC_DIRS = (os.path.join(BASE_DIR, 'static'),)
+	SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	STATIC_ROOT = 'staticfiles'
+	STATIC_URL = '/static/'
 else:
 	# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-# Heroku Database
+	# Heroku Database
 	DATABASES = {
     'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
 }
-# Add PostGIS engine
+	# Add PostGIS engine
 	DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 
