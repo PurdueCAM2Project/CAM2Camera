@@ -62,6 +62,19 @@ DATABASES = {
 # Add PostGIS engine
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
+#For Travis Testing DataBase
+if 'TRAVIS' in os.environ:
+	DATABASES = {
+    	'default': {
+    	    'ENGINE': 'django.contrib.gis.db.backends.postgis',
+    	    'NAME': 'cam2api',
+    	    'USER': 'cam2api',
+    	    'PASSWORD': '123456',
+    	    'HOST': 'localhost',
+    	    'PORT': '',
+    	}
+	}
+
 ALLOWED_HOSTS = ["*"]
 
 # Default Set of DEBUG is False
