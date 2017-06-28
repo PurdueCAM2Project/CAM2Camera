@@ -74,6 +74,7 @@ if 'TRAVIS' in os.environ:
 	BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 	STATIC_ROOT = 'staticfiles'
 	STATIC_URL = '/static/'
+	SECURE_SSL_REDIRECT = False
 else:
 	# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 	# Heroku Database
