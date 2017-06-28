@@ -54,13 +54,7 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 GEOS_LIBRARY_PATH = os.environ.get('GEOS_LIBRARY_PATH')
 GDAL_LIBRARY_PATH = os.environ.get('GDAL_LIBRARY_PATH')
 
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-# Heroku Database
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
-}
-# Add PostGIS engine
-DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+
 
 #For Travis Testing DataBase
 if 'TRAVIS' in os.environ:
@@ -74,6 +68,16 @@ if 'TRAVIS' in os.environ:
     	    'PORT': '',
     	}
 	}
+	STATIC_DIRS = (os.path.join(BASE_DIR, 'static'),)
+else:
+	# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+# Heroku Database
+	DATABASES = {
+    'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
+}
+# Add PostGIS engine
+	DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+
 
 ALLOWED_HOSTS = ["*"]
 
