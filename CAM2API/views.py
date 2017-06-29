@@ -111,6 +111,15 @@ class CameraDetail(APIView):
 		camera.delete()
 		return(Response(status=status.HTTP_204_NO_CONTENT))
 
+class CameraQuery(APIView):
+
+	def get(self, request, lat, lon, query_type, value):
+		print(lat)
+		print(lon)
+		print(query_type)
+		print(value)
+		return Response("Here")
+
 def filter_cameras(cameras, query_params):
 	for param in query_params:
 		if param == "city":
