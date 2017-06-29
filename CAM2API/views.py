@@ -16,8 +16,7 @@ import datetime
 class CameraList(APIView):
 
 	def get(self, request):
-		cameras = Camera.objects.all()
-		filtered_cameras = filter_cameras(cameras, self.request.query_params)
+		filtered_cameras = filter_cameras(self.request.query_params)
 		serializer = CameraSerializer(filtered_cameras, many=True)
 		return Response(serializer.data)
 
@@ -114,13 +113,26 @@ class CameraDetail(APIView):
 class CameraQuery(APIView):
 
 	def get(self, request, lat, lon, query_type, value):
-		print(lat)
-		print(lon)
-		print(query_type)
-		print(value)
-		return Response("Here")
+		filtered_cameras = filter_cameras(self.request.query_params)
+		lat_lng = '{{ "type": "Point", "coordinates": [ {}, {} ] }}'.format(lat, lon)
+		location = GEOSGeometry(lat_lng)
+		if query_type == "radius":
+			result = self.radius_query(filtered_cameras, location, float(value))
+		else:
+			result = self.count_query(filtered_cameras, location, float(value))
+		result = CameraSerializer(result, many=True)
+		return Response(result.data)
 
-def filter_cameras(cameras, query_params):
+	def radius_query(self, cameras, location, radius):
+		print("Radius is {}".format(radius))
+		return cameras
+
+	def count_query(self, cameras, location, count):
+		print("Count is {}".format(count))
+		return cameras
+
+def filter_cameras(query_params):
+	cameras = Camera.objects.all()
 	for param in query_params:
 		if param == "city":
 			cameras = cameras.filter(city=query_params[param])
