@@ -11,11 +11,13 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+import datetime
 
 class CameraList(APIView):
 
 	def get(self, request):
-		filtered_cameras = filter_cameras(self.request.query_params)
+		cameras = Camera.objects.all()
+		filtered_cameras = filter_cameras(cameras, self.request.query_params)
 		serializer = CameraSerializer(filtered_cameras, many=True)
 		return Response(serializer.data)
 
@@ -109,15 +111,84 @@ class CameraDetail(APIView):
 		camera.delete()
 		return(Response(status=status.HTTP_204_NO_CONTENT))
 
-def filter_cameras(query_params):
-	result = Camera.objects.all()
+def filter_cameras(cameras, query_params):
 	for param in query_params:
 		if param == "city":
-			result = result.filter(city=query_params[param])
+			cameras = cameras.filter(city=query_params[param])
 		elif param == "state":
-			result = result.filter(state=query_params[param])
+			cameras = cameras.filter(state=query_params[param])
 		elif param == "country":
-			result = result.filter(country=query_params[param])
+			cameras = cameras.filter(country=query_params[param])
 		elif param == "camera_type":
-			result = result.filter(camera_type=query_params[param])
-	return result 
+			cameras = cameras.filter(camera_type=query_params[param])
+		elif param == "lat":
+			cameras = cameras.filter(lat=float(query_params[param]))
+		elif param == "lat_min":
+			cameras = cameras.filter(lat__gte=float(query_params[param]))
+		elif param == "lat_max":
+			cameras = cameras.filter(lat__lte=float(query_params[param]))
+		elif param == "lng":
+			cameras = cameras.filter(lng=float(query_params[param]))
+		elif param == "lng_min":
+			cameras = cameras.filter(lng__gte=float(query_params[param]))
+		elif param == "lng_max":
+			cameras = cameras.filter(lng__lte=float(query_params[param]))
+		elif param == "framerate":
+			cameras = cameras.filter(framerate=float(query_params[param]))
+		elif param == "framerate_min":
+			cameras = cameras.filter(framerate__gte=float(query_params[param]))
+		elif param == "framerate_max":
+			cameras = cameras.filter(framerate__lte=float(query_params[param]))
+		elif param == "source":
+			cameras = cameras.filter(source=query_params[param])
+		elif param == "resolution_w":
+			cameras = cameras.filter(resolution_w=int(query_params[param]))
+		elif param == "resolution_w_min":
+			cameras = cameras.filter(resolution_w__gte=int(query_params[param]))
+		elif param == "resolution_w_max":
+			cameras = cameras.filter(resolution_w__lte=int(query_params[param]))
+		elif param == "resolution_h":
+			cameras = cameras.filter(resolution_h=int(query_params[param]))
+		elif param == "resolution_h_min":
+			cameras = cameras.filter(resolution_h__gte=int(query_params[param]))
+		elif param == "resolution_h_max":
+			cameras = cameras.filter(resolution_h__lte=int(query_params[param]))
+		elif param == "id":
+			cameras = cameras.filter(camera_id=int(query_params[param]))
+		elif param == "video":
+			if query_params[param] in ['True', 'true', 't']:
+				cameras = cameras.filter(is_video=True)
+			elif query_params[param] in ['False', 'false', 'f']:
+				cameras = cameras.filter(is_video=False)
+		elif param == "outdoors":
+			if query_params[param] in ['True', 'true', 't']:
+				cameras = cameras.filter(outdoors=True)
+			elif query_params[param] in ['False', 'false', 'f']:
+				cameras = cameras.filter(outdoors=False)
+		elif param == "traffic":
+			if query_params[param] in ['True', 'true', 't']:
+				cameras = cameras.filter(traffic=True)
+			elif query_params[param] in ['False', 'false', 'f']:
+				cameras = cameras.filter(traffic=False)
+		elif param == "inactive":
+			if query_params[param] in ['True', 'true', 't']:
+				cameras = cameras.filter(inactive=True)
+			elif query_params[param] in ['False', 'false', 'f']:
+				cameras = cameras.filter(inactive=False)
+		elif param == "added_before":
+			time_format = "%m/%d/%Y"
+			limit = datetime.datetime.strptime(query_params[param],time_format)
+			cameras = cameras.filter(date_added__lte = limit)
+		elif param == "added_after":
+			time_format = "%m/%d/%Y"
+			limit = datetime.datetime.strptime(query_params[param],time_format)
+			cameras = cameras.filter(date_added__gte = limit)
+		elif param == "updated_before":
+			time_format = "%m/%d/%Y"
+			limit = datetime.datetime.strptime(query_params[param],time_format)
+			cameras = cameras.filter(last_updated__lte = limit)
+		elif param == "updated_after":
+			time_format = "%m/%d/%Y"
+			limit = datetime.datetime.strptime(query_params[param],time_format)
+			cameras = cameras.filter(last_updated__gte = limit)
+	return cameras 
