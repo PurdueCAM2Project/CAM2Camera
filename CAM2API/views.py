@@ -126,7 +126,7 @@ class CameraQuery(APIView):
 	def radius_query(self, cameras, location, radius):
 		result = []
 		for camera in cameras:
-			if location.distance(camera.lat_lng) <= radius:
+			if location.distance(camera.lat_lng)*100 <= radius:
 				result.append(camera)
 		return result
 
