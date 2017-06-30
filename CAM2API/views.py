@@ -124,8 +124,11 @@ class CameraQuery(APIView):
 		return Response(result.data)
 
 	def radius_query(self, cameras, location, radius):
-		print("Radius is {}".format(radius))
-		return cameras
+		result = []
+		for camera in cameras:
+			if location.distance(camera.lat_lng) <= radius:
+				result.append(camera)
+		return result
 
 	def count_query(self, cameras, location, count):
 		print("Count is {}".format(count))

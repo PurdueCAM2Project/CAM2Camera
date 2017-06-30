@@ -130,7 +130,8 @@ class CameraSerializer(serializers.ModelSerializer):
 	def validate_geo_location(self, data):
 		geo_checker = geocoder.google([data["lat"], data["lng"]], method="reverse").json
 		if geo_checker["status"] == "OK":
-			data["city"] = geo_checker["city"]
+			if("city" in geo_checker.keys()):
+				data["city"] = geo_checker["city"]
 			data["country"] = self.get_country(geo_checker["address"])
 			if data["country"] == "USA":
 				data["state"] = geo_checker["state"]

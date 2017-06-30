@@ -21,8 +21,8 @@ class Camera(models.Model):
 	city = models.CharField(max_length=30, null=True, blank=True)
 	state = models.CharField(max_length=12, null=True, blank=True)
 	country = models.CharField(max_length=50, null=True, blank=True)
-	lat = models.FloatField(max_length=100)
-	lng = models.FloatField(max_length=100)
+	lat = models.FloatField()
+	lng = models.FloatField()
 	lat_lng = models.GeometryField(geography=True, null=False, blank=True) # Sets geometry field points to geography in postgis
 
 	# Source Information:
@@ -36,7 +36,7 @@ class Camera(models.Model):
 	camera_type = models.CharField(max_length=10, null=False, blank=True, choices=CAMERA_TYPES, default='Non_IP')
 	# More Info:
 	description = models.CharField(max_length=100, null=True, blank=True) # Description of the camera
-	is_video = models.BooleanField(default=False) # True if camera is a video stream
+	is_video = models.NullBooleanField() # True if camera is a video stream
 	framerate = models.FloatField(null=True, blank=True) # Frame rate of the camera if known
 	outdoors = models.NullBooleanField() # True if camera is outdoors Null if unknown.
 	indoors = models.NullBooleanField() # True if the camera is indoors Null if unknown.
@@ -47,6 +47,6 @@ class Camera(models.Model):
 	# Image Retrieval objects:
 	# For more information see https://docs.djangoproject.com/en/1.10/ref/contrib/contenttypes/#generic-relations
 	
-	content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=False, blank=True, related_name="retrieval_model") #ContentType table incudes Class<Non_IP> as well as Class<IP>
+	content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True, related_name="retrieval_model") #ContentType table incudes Class<Non_IP> as well as Class<IP>
 	object_id = models.PositiveIntegerField(null=True) #object_id will be automatically generated and represents the sepecfic primary key for each object in the queryset 
 	retrieval_model = GenericForeignKey('content_type', 'object_id')
