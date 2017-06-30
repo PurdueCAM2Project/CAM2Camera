@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+from queue import PriorityQueue
 import datetime
 
 class CameraList(APIView):
@@ -119,7 +120,7 @@ class CameraQuery(APIView):
 		if query_type == "radius":
 			result = self.radius_query(filtered_cameras, location, float(value))
 		else:
-			result = self.count_query(filtered_cameras, location, float(value))
+			result = self.count_query(filtered_cameras, location, int(value))
 		result = CameraSerializer(result, many=True)
 		return Response(result.data)
 
@@ -131,8 +132,17 @@ class CameraQuery(APIView):
 		return result
 
 	def count_query(self, cameras, location, count):
-		print("Count is {}".format(count))
-		return cameras
+		result = PriorityQueue()
+		for camera in cameras:
+			result.put((location.distance(camera.lat_lng), camera))
+		result_list = []
+		for i in range(count):
+			if not result.empty():
+				distance, camera = result.get()
+				result_list.append(camera)
+			else:
+				break
+		return result_list
 
 def filter_cameras(query_params):
 	cameras = Camera.objects.all()
