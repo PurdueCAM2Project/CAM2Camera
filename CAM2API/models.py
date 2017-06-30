@@ -1,19 +1,22 @@
 from __future__ import unicode_literals
 
 # from django.db import models
-from django.contrib.gis.db import models # contrib.gis.db ensures the PostGis models are included
+# contrib.gis.db ensures the PostGis models are included
+from django.contrib.gis.db import models
 
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-import datetime
+
 
 # Camera Model
 class Non_IP(models.Model):
-	url = models.URLField(unique=True) # URL to the image data
+    url = models.URLField(unique=True)  # URL to the image data
+
 
 class IP(models.Model):
-	ip = models.GenericIPAddressField(unique=True)
-	port = models.PositiveIntegerField(default=80)
+    ip = models.GenericIPAddressField(unique=True)
+    port = models.PositiveIntegerField(default=80)
+
 
 class Camera(models.Model):
 	camera_id = models.PositiveIntegerField(unique=True) # id from old database
@@ -39,7 +42,7 @@ class Camera(models.Model):
 	is_video = models.NullBooleanField() # True if camera is a video stream
 	framerate = models.FloatField(null=True, blank=True) # Frame rate of the camera if known
 	outdoors = models.NullBooleanField() # True if camera is outdoors Null if unknown.
-	indoors = models.NullBooleanField() # True if the camera is indoors Null if unknown.
+
 	traffic = models.NullBooleanField() # True if the camera is a traffic camera Null if unknown.
 	inactive = models.NullBooleanField() # True if data cannot be accessed from the camera Null if unknown.
 	resolution_w = models.PositiveIntegerField(null=True, blank=True) # Resolution width determined automatically 

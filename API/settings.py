@@ -139,4 +139,3 @@ except ImportError:
         from .settings_remote import *
     except ImportError:
         pass
-
