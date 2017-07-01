@@ -88,4 +88,4 @@ else:
 ALLOWED_HOSTS = ["*"]
 
 # Default Set of DEBUG is False
-DEBUG = True
+DEBUG = False
