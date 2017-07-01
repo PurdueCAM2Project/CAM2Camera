@@ -64,27 +64,35 @@ POST TEST
 
     Information Syntex Test
         Data for Test Case I1 - Wrong 'lat' and 'lng' contains punctuation
-        Data for Test Case I2 - Wrong 'lat' and 'lng' contains char
-        Data for Test Case I3 - Wrong city contains number
-        Data for Test Case I4 - Wrong source_url wrong form
+        Data for Test Case I2 - Wrong 'lat' exceed limitation
+        Data for Test Case I3 - Wrong 'lng' exceed limitation
+        Data for Test Case I4 - Wrong city contains number
         Data for Test Case I5 - Wrong source_url wrong form
         Data for Test Case I6 - Wrong source_url wrong form
-        Data for Test Case I7 - Wrong is_video true/false
-        Data for Test Case I8 - Wrong is_video not 1 or 0
-        Data for Test Case I9 - Wrong frame_rate not number
-        Data for Test Case I10 - Wrong frame_rate exceed limitation
-        Data for Test Case I11 - Wrong Indoor is 1 or 0
-        Data for Test Case I12 - Wrong Indoor is char
-        Data for Test Case I13 - Wrong Traffic
-        Data for Test Case I14 - Wrong inactivite
-        Data for Test Case I15 - Wrong resolution 
-        Data for Test Case I16 - Wrong resolution
-        Data for Test Case I17 - Wrong IP form
+        Data for Test Case I7 - Wrong source_url wrong form
+        Data for Test Case I8 - Wrong is_video true/false
+        Data for Test Case I9 - Wrong is_video not 1 or 0
+        Data for Test Case I10 - Wrong frame_rate not number
+        Data for Test Case I11 - Wrong frame_rate not number 2
+        Data for Test Case I12 - Wrong Indoor is 1 or 0
+        Data for Test Case I13 - Wrong Indoor is char
+        Data for Test Case I14 - Wrong Traffic
+        Data for Test Case I15 - Wrong inactivite
+        Data for Test Case I16 - Wrong resolution 
+        Data for Test Case I17 - Wrong resolution
         Data for Test Case I18 - Wrong IP form
         Data for Test Case I19 - Wrong IP form
         Data for Test Case I20 - Wrong IP form
         Data for Test Case I21 - Wrong IP form
-        Data for Test Case I22 - Wrong PORT 
+        Data for Test Case I22 - Wrong IP form
+        Data for Test Case I23 - Wrong PORT 
+        Data for Test Case I23 - Wrong PORT 
+        Data for Test Case I24 - Wrong PORT
+        Data for Test Case I25 - Wrong ID
+        Data for Test Case I26 - Wrong ID
+        Data for Test Case I27 - Wrong URL
+        Data for Test Case I28 - Wrong URL
+        Data for Test Case I29 - Wrong URL
 
     Advanced Information Conflict Test
         Data for Test Case NL1 - Wrong location of 'lag' and 'lng'(In the Sea) Test
@@ -106,16 +114,16 @@ DELETE TEST
 
 class API_View_Tests(APITestCase): 
     def randomUrl(self):
-        return 'http://www.test.com/' + ''.join(random.choice(string.ascii_lowercase) for i in range(10))
+        return 'http://www.test.com/' + ''.join(random.choice(string.ascii_lowercase) for i in range(6))
 
     def randomIp(self):
-        return str(random.randint(100,199)) + '.' + str(random.randint(100,199)) + '.' + str(random.randint(0,9)) + '.' + str(random.randint(0,9))
+        return str(random.randint(100,199)) + '.' + str(random.randint(100,199)) + '.' + str(random.randint(0,5)) + '.' + str(random.randint(0,5))
 
     def randomPort(self):
         return random.randint(999,9999)
 
     def randomID(self):
-        return random.randint(99,99999)
+        return random.randint(99,9999)
 
     print('Test Start...')
     def setUp(self): 
@@ -124,7 +132,7 @@ class API_View_Tests(APITestCase):
         self.answerDict_C = {}
 
         #Data for Test Case C1 - Correct IP Camera Test
-        self.C1 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': self.randomIp(), 'port': self.randomPort(),  'camera_id': self.randomID()}
+        self.C1 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': self.randomIp(), 'port': self.randomPort(),  'camera_id': 1}
         self.answerDict_C['C1'] = 200
         #Data for Test Case C2 - Correct Non IP Camera Test
         self.C2 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': self.randomUrl() , 'camera_id': self.randomID()}
@@ -272,15 +280,15 @@ class API_View_Tests(APITestCase):
 
     #Data for Test Case I9 - Correct is_video not 1 or 0
         self.I9 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 3, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': self.randomUrl(), 'camera_id': self.randomID()}
-        self.answerDict_I['I9'] = [200, 'None']
+        self.answerDict_I['I9'] = [200, ValidationError]
 
     #Data for Test Case I10 - Wrong frame_rate not number
         self.I10 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': True, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': self.randomUrl(), 'camera_id': self.randomID()}
-        self.answerDict_I['I10'] = [404, IntegrityError]
+        self.answerDict_I['I10'] = [404, ValidationError]
 
-    #Data for Test Case I11 - Wrong frame_rate exceed limitation
-        self.I11 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 200, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': self.randomUrl(), 'camera_id': self.randomID()}
-        self.answerDict_I['I11'] = [404, IntegrityError]
+    #Data for Test Case I11 - Wrong frame_rate not number 2
+        self.I11 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 'c', 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': self.randomUrl(), 'camera_id': self.randomID()}
+        self.answerDict_I['I11'] = [404, ValidationError]
 
     #Data for Test Case I12 - Wrong Indoor is 1 or 0
         self.I12 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': 1, 'indoors': 0, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'url': self.randomUrl(), 'camera_id': self.randomID()}
@@ -307,11 +315,11 @@ class API_View_Tests(APITestCase):
         self.answerDict_I['I17'] = [404, IntegrityError]
 
     #Data for Test Case I18 - Wrong IP form
-        self.I18 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': self.randomIp(), 'port': self.randomPort(),  'camera_id': self.randomID()}
+        self.I18 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': "999.999.1.1", 'port': self.randomPort(),  'camera_id': self.randomID()}
         self.answerDict_I['I18'] = [404, DataError]
 
     #Data for Test Case I19 - Wrong IP form
-        self.I19 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': self.randomIp(), 'port': self.randomPort(),  'camera_id': self.randomID()}
+        self.I19 = {'lat': 35.6895 , 'lng': 139.6917, 'city': 'Shinjuku-ku', 'country': 'JP', 'source': 'google', 'source_url': 'http://www.google.com', 'last_updated': '2016-04-15 07: 41: 52', 'description': 'This is a test camera', 'is_video': 1, 'framerate': 0.3, 'outdoors': True, 'indoors': False, 'traffic': False, 'inactive': False, 'resolution_w': 1920, 'resolution_h': 1080, 'ip': "1..", 'port': self.randomPort(),  'camera_id': self.randomID()}
         self.answerDict_I['I19'] = [404, DataError]
 
     #Data for Test Case I20 - Wrong IP form
@@ -366,8 +374,6 @@ class API_View_Tests(APITestCase):
 #Delete Test
 
 
-#Work Flow Test
-
 
 
 #Advanced Information Conflict Test
@@ -387,118 +393,737 @@ class API_View_Tests(APITestCase):
 
 
 
-    def test_correct_test_suite_C(self):
-        """Basic Correctness Test
-        Test:
-            Test the basic cases of post, get, put and delete by providing correct cases.
-
-        Args:
-            self.C1 to self.Cn
-
-        Raises:
-            Non Raises in this test suite.
-        """
-
-        print('Test C: Test Basic  Now...\n')
-        client = APIClient()
-        for i in range(1, len(self.answerDict_C)+1):
-            with self.subTest(i=i):
-                testName = "C" + str(i)
-                data = getattr(self, testName)
-                print("Current Test: ", testName)
-                response = self.client.post('/cameras.json/', data, format = 'json')
-                self.assertEqual(response.status_code, self.answerDict_C[testName])
 
 
 
-    def test_missing_information_test_suite_E(self):
-        """Missing Information Test
-        Test: 
-            Test the different cases about missing the required information in a post request.
 
-        Args:
-            self.E1 to self.En
+#POST TEST
 
-        Raises:
-            AttributeError: If data miss both IP and URL
-            IntegrityError: If data miss any required information
-            GDALException : If data miss any infroamtion about lat and lng.
-        """
-        print('Test E: Test Missing Information Now...\n')
-        client = APIClient()
-        for i in range(1, len(self.answerDict_E)+1):
-            with self.subTest(i=i):
-                testName = "E" + str(i)
-                data = getattr(self, testName)
-                print("Current Test: ", testName)
-                if self.answerDict_E[testName][1] == 'None':
+    #Basic Correctness Test
+        #Data for Test Case C1 - Correct IP Camera Test
+    def test_correct_IP_Camera(self):
+            client = APIClient()
+            response = self.client.post('/cameras.json/', self.C1, format = 'json')
+            self.assertEqual(response.status_code, self.answerDict_C['C1'])
+
+        #Data for Test Case C2 - Correct Non IP Camera Test
+    def test_correct_Non_IP_Camera(self):
+            client = APIClient()
+            response = self.client.post('/cameras.json/', self.C2, format = 'json')
+            self.assertEqual(response.status_code, self.answerDict_C['C2'])
+
+    #Missing Information Test
+        #Data for Test Case E1 - Wrong IP Camera Without IP Test
+    def test_wrong_IP_Camera(self):
+            client = APIClient()
+            testName = 'E1'
+            data = self.E1
+            if self.answerDict_E[testName][1] == 'None':
                     response = self.client.post('/cameras.json/', data, format = 'json')
                     self.assertEqual(response.status_code, self.answerDict_E[testName][0])
-                else:
-                    with transaction.atomic():
-                        with self.assertRaises(self.answerDict_E[testName][1]):
-                            response = self.client.post('/cameras.json/', data, format = 'json')
-                            self.assertEqual(response.status_code, self.answerDict_E[testName][0])
-
-
-    def test_Uniquenes_test_suite_U(self):
-        """Uniqueness Test
-        Test:
-            Test the differents about posting duplicated IP, URL and Camera ID
-
-        Args:
-            self.U1 to self.Un
-
-        Raises:
-            IntegrityError: If IP, URL and Camera ID is duplicated
-
-        """
-        print('Test U: Test Uniqueness Now...\n')
-        client = APIClient()
-        for i in range(1, len(self.answerDict_U)+1):
-            with self.subTest(i=i):
-                testName = "U" + str(i)
-                cmpName = "DU" + str(i)
-                testdata = getattr(self, testName)
-                cmpdata = getattr(self, cmpName)
-                print("Current Test: ", testName)
+            else:
                 with transaction.atomic():
-                    response = self.client.post('/cameras.json/', testdata, format = 'json')
-                    self.assertEqual(response.status_code, self.answerDict_U[testName][0])
-                    with self.assertRaises(self.answerDict_U[testName][2]):
-                        response = self.client.post('/cameras.json/', cmpdata, format = 'json')
-                        self.assertEqual(response.status_code, self.answerDict_U[testName][1])
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
 
-
-
-    def test_Information_Syntex_test_suite_I(self):
-        """Information Syntex Test
-        Test:
-            Test the syntex of the input for each field. 
-        Args:
-            self.I1 to self.In
-
-        Raises:
-            IntegrityError: If IP, URL and Camera ID is duplicated  
-            ValueError: If lat or lng is exceed limits or not int type
-            DataError: If IP format is wrong
-        """
-
-        print('Test U: Test Information Syntex Now...\n')
-        client = APIClient()
-        for i in range(1, len(self.answerDict_I)+1):
-            with self.subTest(i=i):
-                testName = "I" + str(i)
-                data = getattr(self, testName)
-                print("Current Test: ", testName)
-                if self.answerDict_I[testName][1] == 'None':
+        #Data for Test Case E2 - Correct IP Camera Without PORT Test
+    def test_correct_IP_Camera(self):
+            client = APIClient()
+            testName = 'E2'
+            data = self.E2
+            if self.answerDict_E[testName][1] == 'None':
                     response = self.client.post('/cameras.json/', data, format = 'json')
-                    self.assertEqual(response.status_code, self.answerDict_I[testName][0])
-                else:
-                    with transaction.atomic():
-                        with self.assertRaises(self.answerDict_I[testName][1]):
-                            response = self.client.post('/cameras.json/', data, format = 'json')
-                            self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E3 - Wrong Non IP Camera Without URL Test
+    def test_wrong_Non_IP_Camera_Without_URL(self):
+            client = APIClient()
+            testName = 'E3'
+            data = self.E3
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E4 - Wrong Camera With URL and IP Test
+    def test_wrong_Camera_with_URL_and_IP(self):
+            client = APIClient()
+            testName = 'E4'
+            data = self.E4
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E5 - Wrong Camera Without URL and IP Test
+    def test_wrong_Camera_without_URL_and_IP(self):
+            client = APIClient()
+            testName = 'E5'
+            data = self.E5
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E6 - Wrong Non IP Camera With URL and PORT Test
+    def test_wrong_Non_IP_Camera_Without_URL_and_Port(self):
+            client = APIClient()
+            testName = 'E6'
+            data = self.E6
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E7 - Wrong Camera With URL,  IP and PORT Test
+    def test_wrong_camera_with_URL_IP_and_Port(self):
+            client = APIClient()
+            testName = 'E7'
+            data = self.E7
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E8 - Wrong Camera Without ID Test
+    def test_wrong_camera_without_ID(self):
+            client = APIClient()
+            testName = 'E8'
+            data = self.E8
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E9 - Wrong Camera Without city Test
+    def test_wrong_camera_without_city(self):
+            client = APIClient()
+            testName = 'E9'
+            data = self.E9
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E10 - Correct Camera Without state Test
+    def test_correct_camera_without_state(self):
+            client = APIClient()
+            testName = 'E10'
+            data = self.E10
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E11 - Wrong Camera Without Lag Test
+    def test_wrong_camera_without_Lag(self):
+            client = APIClient()
+            testName = 'E11'
+            data = self.E11
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E12 - Wrong Camera Without lng Test
+    def test_wrong_camera_without_lng(self):
+            client = APIClient()
+            testName = 'E12'
+            data = self.E12
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E13 - Wrong Camera Without source Test
+    def test_wrong_camera_without_source(self):
+            client = APIClient()
+            testName = 'E13'
+            data = self.E13
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+
+        #Data for Test Case E14 - Wrong Camera Without source_url Test
+    def test_wrong_camera_without_source_url(self):
+            client = APIClient()
+            testName = 'E14'
+            data = self.E14
+            if self.answerDict_E[testName][1] == 'None':
+                    response = self.client.post('/cameras.json/', data, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_E[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_E[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_E[testName][0])
 
 
+    #Uniqueness Test
+        #Data for Test Case U1 - Wrong duplicated Camera ID Test
+    def test_wrong_duplicate_camera_ID(self):
+            client = APIClient()
+            testName = 'U1'
+            cmpName = 'DU1'
+            testdata = self.U1
+            cmpdata = self.DU1
+            with transaction.atomic():
+                response = self.client.post('/cameras.json/', testdata, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_U[testName][0])
+                with self.assertRaises(self.answerDict_U[testName][2]):
+                    response = self.client.post('/cameras.json/', cmpdata, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_U[testName][1])
+
+        #Data for Test Case U2 - Wrong duplicated URL Test
+    def test_wrong_duplicated_URL(self):
+            client = APIClient()
+            testName = 'U2'
+            cmpName = 'DU2'
+            testdata = self.U2
+            cmpdata = self.DU2
+            with transaction.atomic():
+                response = self.client.post('/cameras.json/', testdata, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_U[testName][0])
+                with self.assertRaises(self.answerDict_U[testName][2]):
+                    response = self.client.post('/cameras.json/', cmpdata, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_U[testName][1])
+
+        #Data for Test Case U3 - Wrong duplicated IP Test
+    def test_wrong_duplicated_IP(self):
+            client = APIClient()
+            testName = 'U3'
+            cmpName = 'DU3'
+            testdata = self.U3
+            cmpdata = self.DU3
+            with transaction.atomic():
+                response = self.client.post('/cameras.json/', testdata, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_U[testName][0])
+                with self.assertRaises(self.answerDict_U[testName][2]):
+                    response = self.client.post('/cameras.json/', cmpdata, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_U[testName][1])
+
+        #Data for Test Case U4 - Wrong duplicated URL but different IP Test
+    def test_wrong_duplicated_URL_but_different_IP(self):
+            client = APIClient()
+            testName = 'U3'
+            cmpName = 'DU3'
+            testdata = self.U3
+            cmpdata = self.DU3
+            with transaction.atomic():
+                response = self.client.post('/cameras.json/', testdata, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_U[testName][0])
+                with self.assertRaises(self.answerDict_U[testName][2]):
+                    response = self.client.post('/cameras.json/', cmpdata, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_U[testName][1])
+
+        #Data for Test Case U5 - Wrong duplicated IP but different URL Test
+    def test_wrong_duplicated_IP_but_different_URL_test(self):
+            client = APIClient()
+            testName = 'U3'
+            cmpName = 'DU3'
+            testdata = self.U3
+            cmpdata = self.DU3
+            with transaction.atomic():
+                response = self.client.post('/cameras.json/', testdata, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_U[testName][0])
+                with self.assertRaises(self.answerDict_U[testName][2]):
+                    response = self.client.post('/cameras.json/', cmpdata, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_U[testName][1])
+
+
+    # Non Exist Camera Test
+    #     Data for Test Case N1 - Wrong Camera ID to get Test
+    def test_wrong_duplicated_IP_but_different_URL_test(self):
+            client = APIClient()
+            testName = 'U3'
+            cmpName = 'DU3'
+            testdata = self.U3
+            cmpdata = self.DU3
+            with transaction.atomic():
+                response = self.client.post('/cameras.json/', testdata, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_U[testName][0])
+                with self.assertRaises(self.answerDict_U[testName][2]):
+                    response = self.client.post('/cameras.json/', cmpdata, format = 'json')
+                    self.assertEqual(response.status_code, self.answerDict_U[testName][1])
+
+
+    
+    # HTTP Status Code Test
+    #     Data for Test Case H1 - 200
+    #     Data for Test Case H2 - 201
+    #     Data for Test Case H3 - 404
+    #     Data for Test Case H4 - 404
+    #     Data for Test Case H5 - 404
+    #     Data for Test Case H6 - 404
+    #     Data for Test Case H7 - 500
+
+    # Information Syntex Test
+    #     Data for Test Case I1 - Wrong 'lat' and 'lng' contains punctuation
+    def test_wrong_lat_and_lng_punctuation(self):
+            client = APIClient()
+            testName = 'I1'
+            data = self.I1
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I2 - Wrong 'lng' exceed lmites
+    def test_wrong_lng_exceed_limites(self):
+            client = APIClient()
+            testName = 'I2'
+            data = self.I2
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I3 - Wrong 'lat' exceed limites
+    def test_wrong_lat_exceed_limites(self):
+            client = APIClient()
+            testName = 'I3'
+            data = self.I3
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+
+    #     Data for Test Case I4 - Wrong city contains number
+    def test_wrong_city_number(self):
+            client = APIClient()
+            testName = 'I4'
+            data = self.I4
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I5 - Wrong source_url wrong form
+    def test_wrong_source_url_wrong_form1(self):
+            client = APIClient()
+            testName = 'I5'
+            data = self.I5
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I6 - Wrong source_url wrong form
+    def test_wrong_source_url_wrong_form2(self):
+            client = APIClient()
+            testName = 'I6'
+            data = self.I6
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I7 - Wrong source_url wrong form
+    def test_wrong_source_url_wrong_form3(self):
+            client = APIClient()
+            testName = 'I7'
+            data = self.I7
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I8 - Wrong is_video true/false
+    def test_wrong_is_video_true_false(self):
+            client = APIClient()
+            testName = 'I8'
+            data = self.I8
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I9 - Wrong is_video not 1 or 0
+    def test_wrong_is_video_not_1_or_0(self):
+            client = APIClient()
+            testName = 'I9'
+            data = self.I9
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I10 - Wrong frame_rate not number
+    def test_wrong_frame_rate_not_number(self):
+            client = APIClient()
+            testName = 'I10'
+            data = self.I10
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I11 - Wrong frame_rate not number 2
+    def test_wrong_frame_rate_not_number_2(self):
+            client = APIClient()
+            testName = 'I11'
+            data = self.I11
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I12 - Wrong Indoor is 1 or 0
+    def test_wrong_indoor_is_1_or_0(self):
+            client = APIClient()
+            testName = 'I12'
+            data = self.I12
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I13 - Wrong Indoor is char
+    def test_wrong_Indoor_is_char(self):
+            client = APIClient()
+            testName = 'I13'
+            data = self.I13
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I14 - Wrong Traffic
+    def test_wrong_traffic(self):
+            client = APIClient()
+            testName = 'I14'
+            data = self.I14
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I15 - Wrong inactivite
+    def test_wrong_inactivite(self):
+            client = APIClient()
+            testName = 'I15'
+            data = self.I15
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I16 - Wrong resolution
+    def test_wrong_resolution(self):
+            client = APIClient()
+            testName = 'I16'
+            data = self.I16
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I17 - Wrong resolution
+    def test_wrong_resolution(self):
+            client = APIClient()
+            testName = 'I17'
+            data = self.I17
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I18 - Wrong IP form
+    def test_wrong_IP_form1(self):
+            client = APIClient()
+            testName = 'I18'
+            data = self.I18
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I19 - Wrong IP form
+    def test_wrong_IP_form3(self):
+            client = APIClient()
+            testName = 'I19'
+            data = self.I19
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I20 - Wrong IP form
+    def test_wrong_IP_form3(self):
+            client = APIClient()
+            testName = 'I20'
+            data = self.I20
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I21 - Wrong IP form
+    def test_wrong_IP_form4(self):
+            client = APIClient()
+            testName = 'I21'
+            data = self.I21
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I22 - Wrong IP form
+    def test_wrong_IP_form5(self):
+            client = APIClient()
+            testName = 'I22'
+            data = self.I22
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+
+    #     Data for Test Case I23 - Wrong PORT
+    def test_wrong_port1(self):
+            client = APIClient()
+            testName = 'I23'
+            data = self.I23
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0]) 
+
+
+    #     Data for Test Case I24 - Wrong PORT
+    def test_wrong_port2(self):
+            client = APIClient()
+            testName = 'I24'
+            data = self.I24
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0]) 
+
+    #     Data for Test Case I25 - Wrong ID
+    def test_wrong_ID1(self):
+            client = APIClient()
+            testName = 'I25'
+            data = self.I25
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0]) 
+
+    #     Data for Test Case I26 - Wrong ID
+    def test_wrong_ID2(self):
+            client = APIClient()
+            testName = 'I26'
+            data = self.I26
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0]) 
+
+    #     Data for Test Case I27 - Wrong URL
+    def test_wrong_URL1(self):
+            client = APIClient()
+            testName = 'I27'
+            data = self.I27
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0]) 
+
+
+    #     Data for Test Case I28 - Wrong URL
+    def test_wrong_URL2(self):
+            client = APIClient()
+            testName = 'I28'
+            data = self.I28
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0]) 
+
+    #     Data for Test Case I29 - Wrong URL
+    def test_wrong_URL3(self):
+            client = APIClient()
+            testName = 'I29'
+            data = self.I29
+            if self.answerDict_I[testName][1] == 'None':
+                response = self.client.post('/cameras.json/', data, format = 'json')
+                self.assertEqual(response.status_code, self.answerDict_I[testName][0])
+            else:
+                with transaction.atomic():
+                    with self.assertRaises(self.answerDict_I[testName][1]):
+                        response = self.client.post('/cameras.json/', data, format = 'json')
+                        self.assertEqual(response.status_code, self.answerDict_I[testName][0]) 
+
+    # Advanced Information Conflict Test
+    #     Data for Test Case NL1 - Wrong location of 'lag' and 'lng'(In the Sea) Test
+    #     Data for Test Case NL2 - Wrong location of 'lag' and 'lng'(In the Sea) Test
+    #     Data for Test Case NL3 - Wrong Country mismatch with 'lag' and 'lng' Test
+    #     Data for Test Case NL4 - Wrong Country mismatch with 'lag' and 'lng' Test
+    #     Data for Test Case NL5 - Wrong City mismatch with 'lag' and 'lng' Test
+    #     Data for Test Case NL6 - Wrong City mismatch with 'lag' and 'lng' Test
+    #     Data for Test Case NL7 - Wrong unknown City with another same but wrong named City Test
 
