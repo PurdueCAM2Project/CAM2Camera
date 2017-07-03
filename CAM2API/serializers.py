@@ -40,7 +40,7 @@ class CameraSerializer(serializers.ModelSerializer):
 		model = Camera
 		fields = ('pk', 'camera_id', 'city' ,'state', 'country', 'retrieval_model','lat','lng','lat_lng','source','source_url',
 			'date_added','last_updated','camera_type','description','is_video','framerate',
-			'outdoors','indoors','traffic','inactive','resolution_w','resolution_h')
+			'outdoors','traffic','inactive','resolution_w','resolution_h')
 		extra_kwargs = {'lat_lng':{'write_only':True}}
 
 	def create(self, validated_data):

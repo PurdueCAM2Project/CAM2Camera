@@ -29,8 +29,8 @@ class Camera(models.Model):
 	lat_lng = models.GeometryField(geography=True, null=False, blank=True) # Sets geometry field points to geography in postgis
 
 	# Source Information:
-	source = models.CharField(max_length=100)
-	source_url = models.URLField() # URL of the provider of the source (NOT for image data!)
+	source = models.CharField(max_length=100, null=True, blank=True)
+	source_url = models.URLField(null=True, blank=True) # URL of the provider of the source (NOT for image data!)
 	# Time Information:
 	date_added = models.DateTimeField(auto_now_add=True)
 	last_updated = models.DateTimeField(auto_now_add=True) # Last known time a snapshot was downloaded30
