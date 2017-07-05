@@ -142,3 +142,56 @@ class CameraSerializer(serializers.ModelSerializer):
 		regex = r", ([a-zA-Z\s]+)$"
 		country = re.findall(regex, address)[0]
 		return country
+
+
+
+class RegisterAppView(APIView):
+	"""
+	Returns:
+	POST -- Create a new application object in the database with provided app_name and permission_level
+	"""
+	authentication_classes = (CAM2HommieAuthentication, )
+
+	def post(self, request, format=None):
+		"""
+		Create a new application object in the databse and returns the correspondent client_id and client_secret.
+		input request: HTTP request
+		return: client_id and client_secret with HTTP_201_CREATED / HTTP_400_BAD_REQUEST
+		"""
+		print(request.user, request.auth)
+		data = request.data
+		serializer = RegisterAppSerializer(data=data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
+		return Response(serializer.errors)
+
+class ObtainAppTokenView(APIView):
+	"""
+	Returns:
+	POST -- Dynamically generate the JSON Web Token encrypting the client_id and client_secret
+	"""
+	def post(self, request, format=None):
+		"""
+		Validate the client_id and client_secret and Response with the JSON Web Token
+		input request: HTTP request
+		return: JSON Web Token with HTTP_201_CREATED
+				/ HTTP_400_BAD_REQUEST
+		"""
+		data = request.data
+		serializer = ObtainAppTokenSerializer(data=data)
+		if serializer.is_valid():
+			token = self.generate_token(serializer.validated_data)
+			return Response({"token": token}, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+	def generate_token(self, validated_data):
+		"""
+		Generate the JSON Web Token with the validated client_id and client_secret
+		input reqeust: dict of validated client_id and client_secret
+		return: JSON Web Token
+		"""
+		app = Application.objects.get(client_id=validated_data["client_id"])
+		payload = jwt_app_payload_handler(app)
+		token = jwt_encode_handler(payload)
+		return token
