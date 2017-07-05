@@ -3,7 +3,7 @@ from rest_framework import exceptions, HTTP_HEADER_ENCODING
 from django.utils.six import text_type
 from rest_framework.authentication import TokenAuthentication, BaseAuthentication
 from django.contrib.auth.models import User 
-from CAM2API.models import RegisterUser, Application
+from CAM2API.models import Application
 
 import datetime 
 from django.utils import timezone

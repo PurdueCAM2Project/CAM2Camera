@@ -46,7 +46,8 @@ ROOT_URLCONF = 'API.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['API/staticfiles/','API/templates/'],
+        #'DIRS': ['API/staticfiles/','API/templates/'],
+        'DIRS': [os.path.join(BASE_DIR, '/CAM2API/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,6 +63,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'API.wsgi.application'
+
+#AUTH_USER_MODEL = 'CAM2API.Account'
 
 
 # Password validation
@@ -85,8 +88,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # REST_framework libraries
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+        #'rest_framework.authentication.TokenAuthentication',
+        #'CAM2API.authentication.AccountTokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        #'rest_framework.permissions.IsAuthenticated',
+        #'CAM2API.permissions.CAM2APIPermission', 
     )
 }
 
@@ -102,6 +111,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+LOGIN_REDIRECT_URL = '/cameras'
 
 LOGGING = {
     'version': 1,
@@ -124,12 +135,12 @@ LOGGING = {
 
 ADMINS = [('Ryan', "dailey1@purdue.edu")]
 
-# EMAIL_BACKEND = 'django.core.mail.backend.smtp.EmailBackend'
-# EMAIL_HOST = os.environ()
-# EMAIL_PORT = 
-# EMAIL_HOST_USER = 
-# EMAIL_HOST_PASSWORD = 
-# EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'wang50278668@gmail.com'
+EMAIL_HOST_PASSWORD = 'Wjc50278668'
+EMAIL_USE_TLS = True
 
 # Import settings specific to deployment
 try:
@@ -139,4 +150,6 @@ except ImportError:
         from .settings_remote import *
     except ImportError:
         pass
+
+
 
