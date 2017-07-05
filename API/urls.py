@@ -24,5 +24,5 @@ urlpatterns = [
     # url(r'^.*$', RedirectView.as_view(url='/cameras/', permanent=False), name='index'),
 ]
 
-handler404 = 'API.views.resource_not_found' 
-handler500 = 'API.views.server_error' 
+handler404 = 'API.views.resource_not_found'
+handler500 = 'API.views.server_error'

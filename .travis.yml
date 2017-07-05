@@ -1,0 +1,30 @@
+language: python
+python:
+- '3.6'
+dist: trusty
+before_install:
+- sudo apt-get install python-dev
+- sudo apt-get install libpq-dev
+- sudo apt-get install postgresql
+- sudo apt-get install postgresql-contrib
+- sudo apt-get install postgis
+
+addons:
+  postgresql: 9.5
+  apt:
+    packages:
+    - postgresql-9.5-postgis-2.3
+install:
+- pip install -r requirements.txt
+
+before_script:
+- psql -c "CREATE DATABASE cam2api;" -U postgres
+- psql -c "CREATE USER cam2api WITH PASSWORD '123456';" -U postgres
+- psql -c "GRANT ALL PRIVILEGES ON DATABASE cam2api TO cam2api;" -U postgres
+- psql -c "ALTER ROLE cam2api SUPERUSER;" -U postgres
+- psql -c "\connect cam2api;" -U postgres
+- psql -c "CREATE EXTENSION postgis;" -U postgres
+- psql -c "\q"
+script:
+- travis_retry python manage.py test
+cache: pip

@@ -2,9 +2,8 @@ from rest_framework import serializers
 from CAM2API.models import Camera, IP, Non_IP, Application
 from django.core.exceptions import ValidationError
 from django.contrib.gis.geos import GEOSGeometry
-import re 
+import re
 import geocoder
-import sys
 
 import datetime
 import uuid
@@ -14,30 +13,30 @@ import binascii
 
 class IPSerializer(serializers.ModelSerializer):
 
-	class Meta:
-		model = IP
-		fields = ('ip','port')
+    class Meta:
+        model = IP
+        fields = ('ip','port')
 
-	def create(self, validated_data):
-		return IP.objects.create(**validated_data)
+    def create(self, validated_data):
+        return IP.objects.create(**validated_data)
 
-	def to_internal_value(self, data):
-		deserialized_data = {}
-		for field in self.fields:
-			deserialized_data[field] = data.get(field,None)
-		return deserialized_data
+    def to_internal_value(self, data):
+        deserialized_data = {}
+        for field in self.fields:
+            deserialized_data[field] = data.get(field,None)
+        return deserialized_data
 
-	def to_representation(self, instance):
-		ret = {}
-		for f in self.fields.values():
-			value = getattr(instance, f.field_name)  #f.field_name returns 'ip','port', 
-			ret[f.field_name] = f.to_representation(value)
-		return ret 
+    def to_representation(self, instance):
+        ret = {}
+        for f in self.fields.values():
+            value = getattr(instance, f.field_name)  # f.field_name returns 'ip','port',
+            ret[f.field_name] = f.to_representation(value)
+        return ret
 
 class NonIPSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Non_IP
-		fields = ('url',)
+    class Meta:
+        model = Non_IP
+        fields = ('url',)
 
 class CameraSerializer(serializers.ModelSerializer):
 	retrieval_model = serializers.SerializerMethodField()
@@ -46,9 +45,8 @@ class CameraSerializer(serializers.ModelSerializer):
 		model = Camera
 		fields = ('pk', 'camera_id', 'city' ,'state', 'country', 'retrieval_model','lat','lng','lat_lng','source','source_url',
 			'date_added','last_updated','camera_type','description','is_video','framerate',
-			'outdoors','indoors','traffic','inactive','resolution_w','resolution_h')
+			'outdoors','traffic','inactive','resolution_w','resolution_h')
 		extra_kwargs = {'lat_lng':{'write_only':True}}
-		
 
 	def create(self, validated_data):
 		retrieval_data = validated_data.pop('retrieval_model')
@@ -135,7 +133,8 @@ class CameraSerializer(serializers.ModelSerializer):
 	def validate_geo_location(self, data):
 		geo_checker = geocoder.google([data["lat"], data["lng"]], method="reverse").json
 		if geo_checker["status"] == "OK":
-			data["city"] = geo_checker["city"]
+			if("city" in geo_checker.keys()):
+				data["city"] = geo_checker["city"]
 			data["country"] = self.get_country(geo_checker["address"])
 			if data["country"] == "USA":
 				data["state"] = geo_checker["state"]
