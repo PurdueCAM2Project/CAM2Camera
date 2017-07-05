@@ -6,6 +6,11 @@ import re
 import geocoder
 import sys
 
+import datetime
+import uuid
+import hashlib
+import os
+import binascii
 
 class IPSerializer(serializers.ModelSerializer):
 
@@ -195,3 +200,58 @@ class ObtainAppTokenView(APIView):
 		payload = jwt_app_payload_handler(app)
 		token = jwt_encode_handler(payload)
 		return token
+
+class RegisterAppSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Application
+		fields = ("app_name", "permission_level", )
+
+	def create(self, validated_data):
+		"""
+		Create an application object in the database
+		input validated_data: dict of data returns from running validator
+		returns: an instance of Application
+		"""
+		app = Application.objects.create_app(validated_data)
+		return app
+
+	def to_representation(self, instance):
+		"""
+		Generate the response of the serializer with client_id and client_secret
+		input instance: an instance of the Application 
+		return: dict of client_id and client_secret
+		"""
+		ret = {}
+		fields = self._readable_fields
+		for field in fields:
+			ret[field.field_name] = getattr(instance, field.field_name, None)
+		ret['client_id'] = getattr(instance, 'client_id', None)
+		ret['client_secret'] = getattr(instance, 'client_secret', None)
+		print(ret)
+		return ret
+
+class ObtainAppTokenSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Application
+		fields = ('client_id', 'client_secret', )
+	
+	def validate(self, data):
+		"""
+		Validate the client_id and client_secret with the record stored in the database
+		input data: client_id and client_secret sent in the HTTP request
+		return: validated_data 
+		"""
+		client_id = data.get('client_id',None)
+		client_secret = data.get('client_secret', None)
+		if client_id and client_secret:
+			try:
+				app = Application.objects.get(client_id=client_id)
+			except Application.DoesNotExist:
+				raise serializers.ValidationError("Client_id cannnot be found")
+
+			try:
+				assert client_secret == app.client_secret
+			except AssertionError:
+				raise serializers.ValidationError("client id and secret does not match.")
+			return data
+		else:
