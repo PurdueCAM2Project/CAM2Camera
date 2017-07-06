@@ -2,7 +2,7 @@
 from CAM2API.models import Camera, Non_IP, IP, Application
 from CAM2API.serializers import (CameraSerializer, IPSerializer, 
 								NonIPSerializer, RegisterAppSerializer, 
-								ObtainAppTokenSerializer, )
+								ObtainAppTokenSerializer, RefreshAppTokenSerializer)
 from CAM2API.authentication import CAM2JsonWebTokenAuthentication, CAM2HommieAuthentication
 from CAM2API.utils import ( jwt_encode_handler, jwt_decode_handler, jwt_app_payload_handler, )
 
@@ -19,8 +19,9 @@ from queue import PriorityQueue
 import datetime
 
 class CameraList(APIView):
+	authentication_classes = (CAM2JsonWebTokenAuthentication, )
 
-	def get(self, request):
+	def get(self, request, format=None):
 		filtered_cameras = filter_cameras(self.request.query_params)
 		serializer = CameraSerializer(filtered_cameras, many=True)
 		return Response(serializer.data)
@@ -144,12 +145,22 @@ class ObtainAppTokenView(APIView):
 		app = Application.objects.get(client_id=validated_data["client_id"])
 		payload = jwt_app_payload_handler(app)
 		token = jwt_encode_handler(payload)
+		print(token)
 		return token
 
 
-class CameraQuery(APIView):
+class RefreshAppTokenView(APIView):
+	def post(self, request, format=None):
+		data = request.data
+		serializer = RefreshAppTokenSerializer(data=data)
+		if serializer.is_valid():
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-	def get(self, request, lat, lon, query_type, value):
+
+class CameraQuery(APIView):
+	authentication_classes = (CAM2JsonWebTokenAuthentication, )
+	def get(self, request, lat, lon, query_type, value, format=None):
 		filtered_cameras = filter_cameras(self.request.query_params)
 		lat_lng = '{{ "type": "Point", "coordinates": [ {}, {} ] }}'.format(lat, lon)
 		location = GEOSGeometry(lat_lng)

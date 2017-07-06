@@ -2,9 +2,11 @@ from rest_framework import serializers
 from CAM2API.models import Camera, IP, Non_IP, Application
 from django.core.exceptions import ValidationError
 from django.contrib.gis.geos import GEOSGeometry
+from CAM2API.utils import (jwt_decode_handler, jwt_app_payload_handler, jwt_encode_handler, )
+from calendar import timegm
 import re
 import geocoder
-
+import jwt
 import datetime
 import uuid
 import hashlib
@@ -202,3 +204,50 @@ class ObtainAppTokenSerializer(serializers.ModelSerializer):
 			return data
 		else:
 			serializers.ValidationError("Please provide both client id and secret")
+
+
+class RefreshAppTokenSerializer(serializers.Serializer):
+	token = serializers.CharField()
+
+	def _check_payload(self, token):
+		try:
+			payload = jwt_decode_handler(token, False)
+		except jwt.ExpiredSignature:
+			#raise serializers.ValidationError("Signature has been expired")
+			pass
+		except jwt.DecodeError:
+			raise serializers.ValidationError("Decode Error")
+		except jwt.InvalidTokenError:
+			raise serializers.ValidationError("Invalid Token")
+		return payload
+
+	def _check_app(self, payload):
+		client_id = payload.get("id")
+		print(client_id)
+		print(payload)
+		try:
+			app = Application.objects.get(client_id=client_id)
+		except Application.DoesNotExist:
+			return serializers.ValidationError("App does not exist")
+
+		return app
+
+	def validate(self, data):
+		token = data["token"]
+		payload = self._check_payload(token)
+		app = self._check_app(payload)
+		orig_iat = payload.get("orig_iat", None)
+
+		if not orig_iat:
+			raise serializers.ValidationError("This is not an refreshable token")
+		else:
+			refresh_limit = datetime.timedelta(days=1, seconds=3000)
+			expired_time = orig_iat + int(refresh_limit.days*24*3600 + refresh_limit.seconds)
+			current_time = timegm(datetime.datetime.utcnow().utctimetuple())
+			if expired_time < current_time:
+				raise serializers.ValidationError("Refresh token has been expired")
+			new_payload = jwt_app_payload_handler(app)
+			new_token = jwt_encode_handler(new_payload)
+			return{
+				"token": new_token
+			}

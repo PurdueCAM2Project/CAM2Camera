@@ -19,4 +19,4 @@ DATABASES = {
         'PORT': '',
     }
 }
-DEBUG = False
+DEBUG = True

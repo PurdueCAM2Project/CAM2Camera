@@ -101,8 +101,9 @@ class CAM2JsonWebTokenAuthentication(BaseAuthentication):
 			return None
 
 		try:
-			payload = jwt_decode_handler(jwt_value)
+			payload = jwt_decode_handler(jwt_value, True)
 		except jwt.ExpiredSignature:
+			print("Here")
 			raise exceptions.AuthenticationFailed('Signature has expired')
 		except jwt.DecodeError:
 			raise exceptions.AuthenticationFailed('Decode Error')
