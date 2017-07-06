@@ -7,53 +7,65 @@ import geocoder
 
 
 class IPSerializer(serializers.ModelSerializer):
+	"""Serializer for the instances of IP."""
 
-    class Meta:
-        model = IP
-        fields = ('ip','port')
+	class Meta:
+		model = IP
+		fields = ('ip','port')
 
-    def create(self, validated_data):
-        return IP.objects.create(**validated_data)
+	def create(self, validated_data):
+		"""Creating an instance of the IP object from the validated data."""
+		return IP.objects.create(**validated_data)
 
-    def to_internal_value(self, data):
-        deserialized_data = {}
-        for field in self.fields:
-            deserialized_data[field] = data.get(field,None)
-        return deserialized_data
+	def to_internal_value(self, data):
+		"""Parsing information from data into a dictionary."""
+		deserialized_data = {}
+		for field in self.fields:
+			deserialized_data[field] = data.get(field,None)
+		return deserialized_data
 
-    def to_representation(self, instance):
-        ret = {}
-        for f in self.fields.values():
-            value = getattr(instance, f.field_name)  # f.field_name returns 'ip','port',
-            ret[f.field_name] = f.to_representation(value)
-        return ret
+	def to_representation(self, instance):
+		"""Serializing data for creating IP object."""
+		ret = {}
+		for f in self.fields.values():
+			value = getattr(instance, f.field_name)
+			ret[f.field_name] = f.to_representation(value)
+		return ret
 
 class NonIPSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Non_IP
-        fields = ('url',)
+	"""Serializer for the instances of Non_IP."""
+
+	class Meta:
+		model = Non_IP
+		fields = ('url',)
 
 class CameraSerializer(serializers.ModelSerializer):
+	"""Serializer for the instances of Non_IP."""
+
 	retrieval_model = serializers.SerializerMethodField()
 
 	class Meta:
 		model = Camera
-		fields = ('pk', 'camera_id', 'city' ,'state', 'country', 'retrieval_model','lat','lng','lat_lng','source','source_url',
-			'date_added','last_updated','camera_type','description','is_video','framerate',
-			'outdoors','traffic','inactive','resolution_w','resolution_h')
+		fields = ('pk', 'camera_id', 'city' ,'state', 'country',
+				  'retrieval_model','lat','lng','lat_lng','source',
+				  'source_url','date_added','last_updated','camera_type',
+				  'description','is_video','framerate','outdoors','traffic',
+				  'inactive','resolution_w','resolution_h')
 		extra_kwargs = {'lat_lng':{'write_only':True}}
 
 	def create(self, validated_data):
+		"""Creating new Camera object from the validated data."""
 		retrieval_data = validated_data.pop('retrieval_model')
 		if 'url' in retrieval_data.keys():
 			retrieval_model = Non_IP.objects.create(url=retrieval_data['url'])
 		else:
 			retrieval_model = IP.objects.create(**retrieval_data)
-		camera = Camera.objects.create(retrieval_model=retrieval_model, **validated_data)
+		camera = Camera.objects.create(retrieval_model=retrieval_model,
+									   **validated_data)
 		return camera
 
-	def update(self, instance, validated_data):  #Deserialize
-		print("Update")
+	def update(self, instance, validated_data):
+		"""Updates an existing Camera object with the validated_data."""
 		retrieval_data = validated_data.pop('retrieval_model')
 		retrieval_instance = instance.retrieval_model
 		for key, value in validated_data.items():
@@ -67,6 +79,7 @@ class CameraSerializer(serializers.ModelSerializer):
 		return instance
 
 	def to_internal_value(self, data):
+		"""Parsing information from data into a dictionary."""
 		deserialized_data = {}
 		for field in self.fields:
 			if field == "retrieval_model":
@@ -77,14 +90,16 @@ class CameraSerializer(serializers.ModelSerializer):
 				elif 'url' in retrieval_model_data.keys():
 					retrieval_model = NonIPSerializer(data=retrieval_model_data)
 					deserialized_data["camera_type"] = "Non_IP"
-				deserialized_data[field] = retrieval_model.to_internal_value(retrieval_model_data)
+				deserialized_data[field] = retrieval_model.to_internal_value(
+					retrieval_model_data)
 			elif field == "lat_lng":
 				deserialized_data[field] = self.set_lat_lng(data)
 			elif field != "camera_type":
 				deserialized_data[field] = data.get(field, None)
 		return deserialized_data
 
-	def to_representation(self,instance):   #Serialize
+	def to_representation(self,instance):
+		"""Serializes instance into a dictionary."""
 		ret = {}
 		fields = self._readable_fields
 		for field in fields:
@@ -95,18 +110,22 @@ class CameraSerializer(serializers.ModelSerializer):
 				pass
 		return ret
 
-	def get_retrieval_model(self,instance):  #Serialize
+	def get_retrieval_model(self,instance):
+		"""Takes retrieval_model instance and returns data from it."""
 		if isinstance(instance,IP):
-			return IPSerializer(instance).data   		#Use IPSerializer if retrieval_model object is a IP object()
+			return IPSerializer(instance).data
 		else:
-			return NonIPSerializer(instance).data 		#Use NonIPSerializer if retrieval_model object is Non_IP object
-	
+			return NonIPSerializer(instance).data
+
 	def set_lat_lng(self, data):
-		lat_lng = '{{ "type": "Point", "coordinates": [ {}, {} ] }}'.format(data.get('lat',None), data.get('lng',None))
+		"""Takes lat and lon from data, and creates a geographical location."""
+		lat_lng = '{{ "type": "Point", "coordinates": [ {}, {} ] }}'.format(
+			data.get('lat',None), data.get('lng',None))
 		lat_lng = GEOSGeometry(lat_lng)
 		return lat_lng
 
 	def validate(self, data):
+		"""Validating data passed to the Camera serializer."""
 		errors = []
 		for field in self.fields:
 			try:
@@ -122,11 +141,15 @@ class CameraSerializer(serializers.ModelSerializer):
 		return data
 
 	def validate_framerate(self, framerate):
+		"""Checking if framerate value is in the appropriate range."""
 		if framerate != None and framerate < 0 and framerate > 60:
-			raise ValidationError('Cameras with framerates higher than 60 are not supported.')
+			raise ValidationError('Cameras with framerates higher than 60 are \
+                                        not supported.')
 
 	def validate_geo_location(self, data):
-		geo_checker = geocoder.google([data["lat"], data["lng"]], method="reverse").json
+		"""Retrieving geographical data from the lat and lon, if possible."""
+		geo_checker = geocoder.google([data["lat"], data["lng"]],
+									  method="reverse").json
 		if geo_checker["status"] == "OK":
 			if("city" in geo_checker.keys()):
 				data["city"] = geo_checker["city"]
@@ -138,6 +161,7 @@ class CameraSerializer(serializers.ModelSerializer):
 		return data
 
 	def get_country(self, address):
+		"""Parsing the country from the address string."""
 		regex = r", ([a-zA-Z\s]+)$"
 		country = re.findall(regex, address)[0]
 		return country
