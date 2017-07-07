@@ -64,37 +64,29 @@ class CameraSerializer(serializers.ModelSerializer):
 									   **validated_data)
 		return camera
 
-	def update(self, instance, validated_data):
+	def update(self, camera, validated_data):
 		"""Updates an existing Camera object with the validated_data."""
-		retrieval_data = validated_data.pop('retrieval_model')
-		retrieval_instance = instance.retrieval_model
-		for key, value in validated_data.items():
-			if value is not None:
-				setattr(instance,key,value)
-		setattr(instance,'lat_lng', self.set_lat_lng(validated_data))
-		for key, value in retrieval_data.items():
-			setattr(retrieval_instance, key, value)
-		retrieval_instance.save()
-		instance.save()
-		return instance
+		Camera.objects.filter(pk=camera.pk).update(**validated_data)
+		return camera
 
 	def to_internal_value(self, data):
 		"""Parsing information from data into a dictionary."""
 		deserialized_data = {}
 		for field in self.fields:
-			if field == "retrieval_model":
-				retrieval_model_data = data.get('retrieval_model', None)
-				if 'ip' in retrieval_model_data.keys():
-					retrieval_model = IPSerializer(data=retrieval_model_data)
+			if field == "retrieval_model" and 'retrieval_model' in data.keys():
+				retrieval = data.get('retrieval_model', None)
+				if retrieval and 'ip' in retrieval.keys():
+					retrieval_model = IPSerializer(data=retrieval)
 					deserialized_data["camera_type"] = "IP"
-				elif 'url' in retrieval_model_data.keys():
-					retrieval_model = NonIPSerializer(data=retrieval_model_data)
+				elif 'url' in retrieval.keys():
+					retrieval_model = NonIPSerializer(data=retrieval)
 					deserialized_data["camera_type"] = "Non_IP"
 				deserialized_data[field] = retrieval_model.to_internal_value(
-					retrieval_model_data)
-			elif field == "lat_lng":
+					retrieval)
+			elif field == "lat_lng" and 'lat' in data.keys() \
+								and 'lng' in data.keys():
 				deserialized_data[field] = self.set_lat_lng(data)
-			elif field != "camera_type":
+			elif field != "camera_type" and field in data.keys():
 				deserialized_data[field] = data.get(field, None)
 		return deserialized_data
 
@@ -135,7 +127,8 @@ class CameraSerializer(serializers.ModelSerializer):
 				pass
 			except ValidationError as exc:
 				errors.append(exc) 
-		data = self.validate_geo_location(data)
+		if 'lat' in data.keys() and 'lng' in data.keys():
+			data = self.validate_geo_location(data)
 		if any(errors):
 			raise ValidationError(errors)
 		return data

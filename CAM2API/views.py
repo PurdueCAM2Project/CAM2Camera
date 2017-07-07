@@ -69,12 +69,11 @@ class CameraByID(APIView):
 		serializer = CameraSerializer(camera)
 		return(Response(serializer.data))
 
-	def put(self, request, cd, format=None):
-		"""Updates Camera instance with the data given in the request."""
+	def patch(self, request, cd, format=None):
+		"""Updates Camera instance with the data given in the request body."""
 		camera = self.get_camera_by_id()
 		data = self.convert_data(request.data)
-		print(data)
-		serializer = CameraSerializer(camera, data=data)
+		serializer = CameraSerializer(camera, data=data, partial=True)
 		if serializer.is_valid():
 			serializer.save()
 			return(Response(serializer.data))
