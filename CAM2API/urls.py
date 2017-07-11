@@ -4,7 +4,7 @@ from CAM2API import views
 
 float_num = r'\d+\.?\d{0,4}'
 urlpatterns = [
-	url(r'^$', views.CameraList.as_view()),
+	url(r'^$', views.Home.as_view()),
 	url(r'^cameras/$', views.CameraList.as_view()),
 	url(r'^(?P<cd>\d+)/$', views.CameraByID.as_view()),
 	url(r'^query/lat=(?P<lat>{})\,lon=(?P<lon>{}),(?P<query_type>(radius|count))=(?P<value>\d+)/$'.format(float_num, float_num),views.CameraQuery.as_view()),

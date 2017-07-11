@@ -13,6 +13,12 @@ from django.shortcuts import get_object_or_404
 from queue import PriorityQueue
 import datetime
 
+class Home(APIView):
+	def get(self, request, format=None):
+		welcome_string = 'User documentation: \
+        https://github.com/PurdueCAM2Project/CAM2Camera/wiki/User-documentation'
+		return Response(welcome_string)
+
 class CameraList(APIView):
 	"""Handles GET and POST requests to cam2api_domain/cameras."""
 
