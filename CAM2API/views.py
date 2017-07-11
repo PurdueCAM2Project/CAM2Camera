@@ -7,6 +7,8 @@ from CAM2API.authentication import CAM2JsonWebTokenAuthentication, CAM2HommieAut
 from CAM2API.utils import ( jwt_encode_handler, jwt_decode_handler, jwt_app_payload_handler, )
 
 from django.contrib.gis.geos import GEOSGeometry
+from CAM2API.signals import auto_refresh
+from django.dispatch import receiver
 
 from django.http import Http404
 from rest_framework.views import APIView
@@ -15,11 +17,14 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
+from CAM2API.authentication import CAM2JsonWebTokenAuthentication
+from CAM2API.permissions import CAM2Permission
 from queue import PriorityQueue
 import datetime
 
 class CameraList(APIView):
 	authentication_classes = (CAM2JsonWebTokenAuthentication, )
+	permission_classes = (CAM2Permission, )
 
 	def get(self, request, format=None):
 		filtered_cameras = filter_cameras(self.request.query_params)
@@ -133,7 +138,9 @@ class ObtainAppTokenView(APIView):
 		serializer = ObtainAppTokenSerializer(data=data)
 		if serializer.is_valid():
 			token = self.generate_token(serializer.validated_data)
-			return Response({"token": token}, status=status.HTTP_201_CREATED)
+			return Response({"token": token,
+							"expires in": 60,
+							"token type": "JWT" }, status=status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 	def generate_token(self, validated_data):
@@ -273,3 +280,6 @@ def filter_cameras(query_params):
 			limit = datetime.datetime.strptime(query_params[param],time_format)
 			cameras = cameras.filter(last_updated__gte = limit)
 	return cameras 
+
+
+

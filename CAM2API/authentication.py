@@ -4,13 +4,16 @@ from django.utils.six import text_type
 from rest_framework.authentication import TokenAuthentication, BaseAuthentication
 from django.contrib.auth.models import User 
 from CAM2API.models import Application
-
+from CAM2API.signals import auto_refresh
 import datetime 
 from django.utils import timezone
-
+from calendar import timegm
 from rest_framework_jwt.settings import api_settings
-from CAM2API.utils import jwt_decode_handler
+from CAM2API.utils import (jwt_decode_handler, jwt_encode_handler, jwt_app_payload_handler, )
 import jwt
+
+import datetime
+
 
 
 def get_authorization_header(request):
@@ -73,7 +76,11 @@ class CAM2JsonWebTokenAuthentication(BaseAuthentication):
 		input request: HTTP request
 		return: JSON Web Token
 		"""
-		auth = get_authorization_header(request).split()
+		auth_header = get_authorization_header(request)
+		if auth_header:
+			auth = auth_header.split()
+		else:
+			return None
 		auth_header_prefix = api_settings.JWT_AUTH_HEADER_PREFIX
 
 		if not auth:
@@ -99,18 +106,22 @@ class CAM2JsonWebTokenAuthentication(BaseAuthentication):
 		jwt_value = self.get_jwt_value(request)
 		if jwt_value is None:
 			return None
-
 		try:
 			payload = jwt_decode_handler(jwt_value, True)
 		except jwt.ExpiredSignature:
-			print("Here")
+			#(jwt_value, refresh_checker) = auto_refresh_token(jwt_value)
+			#if refresh_checker:
+			#	request.META["HTTP_AUTHORIZATION"] = "JWT {}".format(jwt_value)
+			#	return self.authenticae(request)
+			#else:
 			raise exceptions.AuthenticationFailed('Signature has expired')
+			#token = auto_refresh.send(sender=None, token=jwt_value)
+
 		except jwt.DecodeError:
 			raise exceptions.AuthenticationFailed('Decode Error')
 		except jwt.InvalidTokenError:
 			raise exceptions.AuthenticationFailed('Invalid Token')
-
-		print(payload)
+		
 		app = self.authenticate_credentials(payload)
 		app.access_times += 1
 		app.save()
@@ -188,6 +199,28 @@ class CAM2HommieAuthentication(BaseAuthentication):
 		return None
 
 
+def auto_refresh_token(jwt_value):
+	refresh_checker = True
+	try:
+		payload = jwt_decode_handler(jwt_value, False)
+	except jwt.DecodeError:
+		raise exceptions.AuthenticationFailed("Decode Error")
+	except InvalidTokenError:
+		raise exceptions.AuthenticationFailed("Invalid Token")
+	orig_iat = payload.get("orig_iat", None)
+	if not orig_iat:
+		refresh_checker = False
+	else:
+		refresh_limit = datetime.timedelta(days=0, seconds=120)
+		expired_time = orig_iat + int(refresh_limit.days*24*3600 + refresh_limit.seconds)
+		current_time = timegm(datetime.datetime.utcnow().utctimetuple())
+		if expired_time < current_time:
+			refresh_checker = False
+		else:
+			app = Application.objects.get(client_id=payload["id"])
+			new_payload = jwt_app_payload_handler(app)
+			jwt_value = jwt_encode_handler(new_payload)
+	return (jwt_value, refresh_checker)
 
 
 

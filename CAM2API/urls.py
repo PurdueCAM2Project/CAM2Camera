@@ -9,7 +9,7 @@ urlpatterns = [
 	url(r'^(?P<cd>\d+)/$', views.CameraByID.as_view()),
 	url(r'^query/lat=(?P<lat>{})\,lon=(?P<lon>{}),(?P<query_type>(radius|count))=(?P<value>\d+)/$'.format(float_num, float_num),views.CameraQuery.as_view()),
 	url(r'^register_app/$', views.RegisterAppView.as_view(), name='register_app'),
-  	url(r'^obtain_token/$', views.ObtainAppTokenView.as_view(), name="obtain_app_token"),
+  	url(r'^token/$', views.ObtainAppTokenView.as_view(), name="obtain_app_token"),
   	url(r'^refresh_token/$', views.RefreshAppTokenView.as_view(), name="refresh_token")
 ]
 

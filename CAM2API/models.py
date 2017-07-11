@@ -73,7 +73,6 @@ class ApplicationManager(models.Manager):
 		return Application.objects.create(**validated_data)
 
 	
-
 class Application(models.Model):
 	app_name = models.CharField(max_length=20, null=False, unique=True)
 	client_id = models.CharField(max_length=100, null=False)

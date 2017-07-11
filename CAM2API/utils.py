@@ -50,7 +50,7 @@ def jwt_app_payload_handler(app):
 	payload = {
 		'id': client_id,
 		'secret': client_secret,
-		'exp': timezone.now() + datetime.timedelta(seconds=30),
+		'exp': timezone.now() + datetime.timedelta(seconds=3600),
 		'level': permission_level,
 		'aud': 'CAM2Web',
 		'iss': 'localhost',

@@ -3,6 +3,7 @@ from CAM2API.models import Camera, IP, Non_IP, Application
 from django.core.exceptions import ValidationError
 from django.contrib.gis.geos import GEOSGeometry
 from CAM2API.utils import (jwt_decode_handler, jwt_app_payload_handler, jwt_encode_handler, )
+from CAM2API.signals import auto_refresh
 from calendar import timegm
 import re
 import geocoder
@@ -214,6 +215,7 @@ class RefreshAppTokenSerializer(serializers.Serializer):
 			payload = jwt_decode_handler(token, False)
 		except jwt.ExpiredSignature:
 			#raise serializers.ValidationError("Signature has been expired")
+			#auto_refresh.send(sender=None, token=token)
 			pass
 		except jwt.DecodeError:
 			raise serializers.ValidationError("Decode Error")
@@ -241,13 +243,17 @@ class RefreshAppTokenSerializer(serializers.Serializer):
 		if not orig_iat:
 			raise serializers.ValidationError("This is not an refreshable token")
 		else:
-			refresh_limit = datetime.timedelta(days=1, seconds=3000)
+			refresh_limit = datetime.timedelta(days=1)
 			expired_time = orig_iat + int(refresh_limit.days*24*3600 + refresh_limit.seconds)
 			current_time = timegm(datetime.datetime.utcnow().utctimetuple())
 			if expired_time < current_time:
 				raise serializers.ValidationError("Refresh token has been expired")
 			new_payload = jwt_app_payload_handler(app)
+			new_payload["orig_iat"] = orig_iat
 			new_token = jwt_encode_handler(new_payload)
 			return{
 				"token": new_token
 			}
+
+
+
