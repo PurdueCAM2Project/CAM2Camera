@@ -4,3 +4,4 @@ API/settings_local.pyc
 *.sublime.workspace
 *.pyc
 venv
+CAM2API/migrations/*
