@@ -38,11 +38,10 @@ class CameraList(APIView):
 
 		if serializer.is_valid():
 			serializer.save()
-			print("Data added")
-			return Response(serializer.data)
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
 		else:
-			print("Data not added")
-			return Response(serializer.errors)
+			return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 	def convert_data(self,data):
 		"""Adds retrieval model for the camera to the data dictionary."""

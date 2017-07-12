@@ -75,7 +75,7 @@ class CameraSerializer(serializers.ModelSerializer):
 		for field in self.fields:
 			if field == "retrieval_model" and 'retrieval_model' in data.keys():
 				retrieval = data.get('retrieval_model', None)
-				if retrieval and 'ip' in retrieval.keys():
+				if 'ip' in retrieval.keys():
 					retrieval_model = IPSerializer(data=retrieval)
 					deserialized_data["camera_type"] = "IP"
 				elif 'url' in retrieval.keys():
@@ -138,6 +138,11 @@ class CameraSerializer(serializers.ModelSerializer):
 		if framerate != None and framerate < 0 and framerate > 60:
 			raise ValidationError('Cameras with framerates higher than 60 are \
                                         not supported.')
+
+	def validate_retrieval_model(self, retrieval_model):
+        """Checking if ip or url was provided by the user"""
+		if not retrieval_model:
+			raise ValidationError('Retrieval model for the camera not provided')
 
 	def validate_geo_location(self, data):
 		"""Retrieving geographical data from the lat and lon, if possible."""
