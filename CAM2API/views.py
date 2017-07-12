@@ -14,7 +14,10 @@ from queue import PriorityQueue
 import datetime
 
 class Home(APIView):
+	"""Handling GET request to the home page"""
+
 	def get(self, request, format=None):
+		"""Displaying user documentation link to the user"""
 		welcome_string = 'User documentation: \
         https://github.com/PurdueCAM2Project/CAM2Camera/wiki/User-documentation'
 		return Response(welcome_string)
