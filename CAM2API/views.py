@@ -38,7 +38,7 @@ class CameraList(APIView):
 		if serializer.is_valid():
 			try:
 				serializer.save()
-			except (IntegrityError, ValueError, TypeError, DataError) as exc:
+			except Exception as exc:
 				return Response({'detail' : str(exc).splitlines()[0],
 								 'args' : ['arg1', 'arg2']},
 								status = status.HTTP_400_BAD_REQUEST)
