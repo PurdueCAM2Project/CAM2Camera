@@ -26,5 +26,7 @@ before_script:
 - psql -c "CREATE EXTENSION postgis;" -U postgres
 - psql -c "\q"
 script:
+- travis_retry python manage.py makemigrations
+- travis_retry python manage.py migrate
 - travis_retry python manage.py test
 cache: pip
