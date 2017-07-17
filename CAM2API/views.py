@@ -114,13 +114,13 @@ class RegisterAppView(APIView):
 		input request: HTTP request
 		return: client_id and client_secret with HTTP_201_CREATED / HTTP_400_BAD_REQUEST
 		"""
-		print(request.user, request.auth)
+		#print(request.user, request.auth)
 		data = request.data
 		serializer = RegisterAppSerializer(data=data)
 		if serializer.is_valid():
 			serializer.save()
-			return Response(serializer.data)
-		return Response(serializer.errors)
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ObtainAppTokenView(APIView):
 	"""
@@ -152,7 +152,7 @@ class ObtainAppTokenView(APIView):
 		app = Application.objects.get(client_id=validated_data["client_id"])
 		payload = jwt_app_payload_handler(app)
 		token = jwt_encode_handler(payload)
-		print(token)
+		#print(token)
 		return token
 
 

@@ -164,6 +164,13 @@ class RegisterAppSerializer(serializers.ModelSerializer):
 		app = Application.objects.create_app(validated_data)
 		return app
 
+
+	def validate(self, data):
+		permission_level = data.get('permission_level', None)
+		if permission_level != 'Basic' and permission_level != 'Admin':
+			raise serializers.ValidationError('Permission_level provided is not valid')
+		return data
+
 	def to_representation(self, instance):
 		"""
 		Generate the response of the serializer with client_id and client_secret
@@ -176,7 +183,6 @@ class RegisterAppSerializer(serializers.ModelSerializer):
 			ret[field.field_name] = getattr(instance, field.field_name, None)
 		ret['client_id'] = getattr(instance, 'client_id', None)
 		ret['client_secret'] = getattr(instance, 'client_secret', None)
-		print(ret)
 		return ret
 
 class ObtainAppTokenSerializer(serializers.ModelSerializer):
@@ -225,8 +231,8 @@ class RefreshAppTokenSerializer(serializers.Serializer):
 
 	def _check_app(self, payload):
 		client_id = payload.get("id")
-		print(client_id)
-		print(payload)
+		#print(client_id)
+		#print(payload)
 		try:
 			app = Application.objects.get(client_id=client_id)
 		except Application.DoesNotExist:

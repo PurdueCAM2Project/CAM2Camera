@@ -78,8 +78,7 @@ class Application(models.Model):
 	client_id = models.CharField(max_length=100, null=False)
 	client_secret = models.CharField(max_length=100, null=False)
 	access_times = models.PositiveIntegerField(default=0)
-	PERMISSION_TYPE = enumerate(['Base', 'Admin'])
-	permission_level = models.CharField(max_length=20, default="Base")
+	permission_level = models.CharField(max_length=20, default="Basic")
 
 	objects = ApplicationManager()
 
