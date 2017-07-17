@@ -140,7 +140,7 @@ class CameraSerializer(serializers.ModelSerializer):
                                         not supported.')
 
 	def validate_retrieval_model(self, retrieval_model):
-        """Checking if ip or url was provided by the user"""
+		"""Checking if ip or url was provided by the user"""
 		if not retrieval_model:
 			raise ValidationError('Retrieval model for the camera not provided')
 
