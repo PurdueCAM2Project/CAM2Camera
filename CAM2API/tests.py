@@ -3,6 +3,8 @@ from django.test import TestCase
 from random import randint
 from CAM2API.models import Application
 from CAM2API.utils import jwt_app_payload_handler, jwt_encode_handler
+from django.utils import timezone 
+import datetime
 
 class AuthTest(TestCase):
 	def setUp(self):
@@ -45,3 +47,13 @@ class AuthTest(TestCase):
 		response = self.client.get('/cameras/', format='json')
 		self.assertEqual(response.status_code, 200) 
 		
+	def test_signature_expire(self):
+		app = Application.objects.get(app_name='ImageCore')
+		payload = jwt_app_payload_handler(app)
+		payload['exp'] = timezone.now() - datetime.timedelta(seconds=3000)
+		token = jwt_encode_handler(payload)		
+		self.client.credentials(HTTP_AUTHORIZATION='JWT' + token)
+		response = self.client.get('/cameras/', format='json')
+		print(response.status_text)
+		print(response.data)
+		self.assertEqual(response.status_code, 400)
