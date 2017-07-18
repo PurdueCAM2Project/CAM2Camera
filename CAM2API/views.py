@@ -97,7 +97,7 @@ class CameraByID(APIView):
 		retrieval_model_delete = camera.retrieval_model
 		retrieval_model_delete.delete()
 		camera.delete()
-		return(Response(status=status.HTTP_204_NO_CONTENT))
+		return(Response('Camera deleted', status=status.HTTP_200_OK))
 
 	def convert_data(self,data):
 		"""Adds retrieval model for the camera to the data dictionary."""
