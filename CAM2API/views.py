@@ -75,6 +75,8 @@ class CameraList(APIView):
 
 class CameraByID(APIView):
     """Handles GET, PUT and DELETE requests to cam2api_domain/<camera_id>."""
+    authentication_classes = (CAM2JsonWebTokenAuthentication, )
+    permission_classes = (CAM2Permission, )
 
     lookup_field = ['camera_id']
     lookup_url_kwargs = ['cd']
@@ -139,6 +141,8 @@ class CameraQuery(APIView):
     kilometers from <lat>, <lon> geo location. If query type is count, then
     <value> closest cameras to the <lat>, <lon> location will be returned.
     """
+    authentication_classes = (CAM2JsonWebTokenAuthentication, )
+    permission_classes = (CAM2Permission, )
 
     def get(self, request, lat, lon, query_type, value, format=None):
         """Returns JSON containing cameras that match the query."""
@@ -272,7 +276,6 @@ class RegisterAppView(APIView):
         input request: HTTP request
         return: client_id and client_secret with HTTP_201_CREATED / HTTP_400_BAD_REQUEST
         """
-        #print(request.user, request.auth)
         data = request.data
         serializer = RegisterAppSerializer(data=data)
         if serializer.is_valid():
@@ -310,7 +313,6 @@ class ObtainAppTokenView(APIView):
         app = Application.objects.get(client_id=validated_data["client_id"])
         payload = jwt_app_payload_handler(app)
         token = jwt_encode_handler(payload)
-        #print(token)
         return token
 
 
