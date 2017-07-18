@@ -32,6 +32,14 @@ class CAM2APITest(APITestCase):
         response = self.client.post(url, data, format='json')
         return response
 
+    def send_get_request(self, url):
+        response = self.client.get(url)
+        return response
+
+    def send_delete_request(self, url):
+        response = self.client.delete(url)
+        return response
+
 class AddingNewCameraTests(CAM2APITest):
     '''Tests of adding new camera'''
 
@@ -190,4 +198,72 @@ class ValidatingDatainNewCameraTests(CAM2APITest):
         response = self.send_post_request('/cameras/', perfect_non_ip_camera)
         self.assertEqual(response.status_code, requests.codes.created)
 
+class QueryingCameras(CAM2APITest):
+    '''Test all possible ways of querying the data'''
 
+    def setUp(self):
+        camera_wl = {'lat': 40.4259, 'lng': -86.9081, 'ip': '10.0.0.2',
+                          'camera_id': 2}
+        camera_chi = {'lat': 41.8781, 'lng': -87.6298, 'ip': '10.0.0.3',
+                          'camera_id': 3}
+        camera_lnd = {'lat': 51.5085 , 'lng': -0.0761,
+                              'url': 'https://www.google.com/4', 'camera_id': 4}
+        camera_ist = {'lat': 41.0514 , 'lng': 28.9795, 'city': 'Istanbul',
+                              'url': 'https://www.google.com/5', 'camera_id': 5}
+        cameras = [camera_wl, camera_chi, camera_lnd, camera_ist]
+        for camera in cameras:
+            self.send_post_request('/cameras/', camera)
+
+    def test_get_HomePage_Responds(self):
+        response = self.send_get_request('/')
+        self.assertEqual(response.status_code, requests.codes.ok)
+
+    def test_get_QueryCameraByID_Queries(self):
+        response = self.send_get_request('/2/')
+        self.assertEqual(response.status_code, requests.codes.ok)
+        self.assertEqual(response.data.get('city'), 'West Lafayette')
+
+    def test_get_AllCamerasInDb_Queries(self):
+        response = self.send_get_request('/cameras/')
+        self.assertEqual(response.status_code, requests.codes.ok)
+        self.assertEqual(len(response.data), 4)
+
+    def test_get_AllCamerasInDbFilteredByCountry_Queries(self):
+        response = self.send_get_request('/cameras/?country=USA')
+        self.assertEqual(len(response.data), 2)
+
+    def test_get_AllCamerasInDbFilteredByLatitudeRange_Queries(self):
+        response = self.send_get_request('/cameras/?lat_min=40.9&lat_max=90')
+        self.assertEqual(len(response.data), 3)
+
+    def test_get_QueryByRadius_Queries(self):
+        response = self.send_get_request('/query/lat=40.42,lng=-86,radius=600/')
+        self.assertEqual(response.status_code, requests.codes.ok)
+        self.assertEqual(len(response.data), 2)
+        cities = [response.data[i]['city'] for i in range(len(response.data))]
+        self.assertTrue('West Lafayette' in cities and 'Chicago' in cities)
+
+    def test_get_QueryByCount_Queries(self):
+        response = self.send_get_request('/query/lat=41,lng=28,count=2/')
+        self.assertEqual(response.status_code, requests.codes.ok)
+        self.assertEqual(len(response.data), 2)
+        cities = [response.data[i]['city'] for i in range(len(response.data))]
+        self.assertTrue('Istanbul' in cities and 'London' in cities)
+
+    def test_get_QueryByCountWhichExceedsNumberOfResults_Queries(self):
+        response = self.send_get_request('/query/lat=41,lng=28,count=100/')
+        self.assertEqual(response.status_code, requests.codes.ok)
+        self.assertEqual(len(response.data), 4)
+
+class DeletingCameras(CAM2APITest):
+    '''Testing deleting camera by its camera_id'''
+
+    def test_delete_DeletingExistingCamera_Successful(self):
+        response = self.send_post_request('/cameras/', self.non_ip_camera)
+        response = self.send_delete_request('/2/')
+        self.assertEqual(response.status_code, requests.codes.ok)
+        self.assertEqual(len(Camera.objects.all()), 0)
+
+    def test_delete_DeletingNonExistingCamera_Unsuccessful(self):
+        response = self.send_delete_request('/100/')
+        self.assertEqual(response.status_code, requests.codes.not_found)
