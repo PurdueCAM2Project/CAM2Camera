@@ -20,19 +20,20 @@ import os
 import requests
 
 class CAM2APITest(APITestCase):
+    '''Class containing general functions used in other test classes'''
+
+    def setUp(self):
+        self.ip_camera = {'lat': 35.6895, 'lng': 139.6917, 'ip': '10.0.0.1',
+                          'camera_id': 1}
+        self.non_ip_camera = {'lat': 35.6895 , 'lng': 139.6917,
+                              'url': 'https://www.google.com/', 'camera_id': 2}
 
     def send_post_request(self, url, data):
         response = self.client.post(url, data, format='json')
         return response
 
 class AddingNewCameraTests(CAM2APITest):
-
-    def setUp(self):
-
-        self.ip_camera = {'lat': 35.6895, 'lng': 139.6917, 'ip': '10.0.0.1',
-                          'camera_id': 1}
-        self.non_ip_camera = {'lat': 35.6895 , 'lng': 139.6917,
-                              'url': 'https://www.google.com/', 'camera_id': 2}
+    '''Tests of adding new camera'''
 
     def test_post_IPCamera_Accepted(self):
         response = self.send_post_request('/cameras/', self.ip_camera)
@@ -114,12 +115,79 @@ class AddingNewCameraTests(CAM2APITest):
         response = self.send_post_request('/cameras/', self.ip_camera)
         self.assertEqual(response.status_code, requests.codes.bad_request)
 
-    def test_post_LatitudeExceedsLimits_Rejected(self):
+    def test_post_DefaultPort80_Accepted(self):
+        response = self.send_post_request('/cameras/', self.ip_camera)
+        port = Camera.objects.get(
+            camera_id=self.ip_camera['camera_id']).retrieval_model.port
+        self.assertEqual(port, 80)
+
+class ValidatingDatainNewCameraTests(CAM2APITest):
+    '''Testing validation of the data in new cameras'''
+
+    def test_validate_CameraIDStringNotInt_Rejected(self):
+        self.ip_camera['camera_id'] = 'incorrect_id'
+        response = self.send_post_request('/cameras/', self.ip_camera)
+        self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_validate_SourceExceedsMaxLength_Rejected(self):
+        self.ip_camera['source'] = ''.join(['a'] * 101)
+        response = self.send_post_request('/cameras/', self.ip_camera)
+        self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_validate_IsVideoNotBoolean_Rejected(self):
+        self.ip_camera['is_video'] = 'NotBooleanValue'
+        response = self.send_post_request('/cameras/', self.ip_camera)
+        self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_validate_LatitudeExceedsLimits_Rejected(self):
         self.ip_camera['lat'] = 91
         response = self.send_post_request('/cameras/', self.ip_camera)
         self.assertEqual(response.status_code, requests.codes.bad_request)
 
-    def test_post_LongitudeExceedsLimits_Rejected(self):
+    def test_validate_LongitudeExceedsLimits_Rejected(self):
         self.ip_camera['lng'] = -181
         response = self.send_post_request('/cameras/', self.ip_camera)
         self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_validate_NegativeResolutionField_Rejected(self):
+        self.ip_camera['resolution_w'] = -1
+        response = self.send_post_request('/cameras/', self.ip_camera)
+        self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_validate_IncorrectIP_Rejected(self):
+        self.ip_camera['ip'] = 'incorrect_ip'
+        response = self.send_post_request('/cameras/', self.ip_camera)
+        self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_validate_IncorrectURL_Rejected(self):
+        self.non_ip_camera['url'] = 'incorrect_url'
+        response = self.send_post_request('/cameras/', self.non_ip_camera)
+        self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_validate_IPCameraAllFieldsCorrectlySpecified_Accepted(self):
+        perfect_ip_camera = {'lat':40.4259 ,'lng':-86.9081,
+                             'city':'West Lafayette','country': 'USA',
+                             'source':'google','source_url':'www.google.com',
+                             'description':'This is a test camera',
+                             'is_video': True,'framerate': 0.3,
+                             'outdoors': True,'indoors': False,'traffic': False,
+                             'inactive': False,'resolution_w': 1920,
+                             'resolution_h': 1080,'ip':"192.168.1.1",'port':22,
+                             'camera_id':8000}
+        response = self.send_post_request('/cameras/', perfect_ip_camera)
+        self.assertEqual(response.status_code, requests.codes.created)
+
+    def test_validate_NonIPCameraAllFieldsCorrectlySpecified_Accepted(self):
+        perfect_non_ip_camera = {'lat':40.4259 ,'lng':-86.9081,
+                             'city':'West Lafayette','country': 'USA',
+                             'source':'google','source_url':'www.google.com',
+                             'description':'This is a test camera',
+                             'is_video': True,'framerate': 0.3,
+                             'outdoors': True,'indoors': False,'traffic': False,
+                             'inactive': False,'resolution_w': 1920,
+                             'resolution_h': 1080,'url':"https://www.url.com",
+                             'camera_id':8000}
+        response = self.send_post_request('/cameras/', perfect_non_ip_camera)
+        self.assertEqual(response.status_code, requests.codes.created)
+
+
