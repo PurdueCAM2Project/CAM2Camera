@@ -21,7 +21,6 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('CAM2API.urls')),
-    # url(r'^.*$', RedirectView.as_view(url='/cameras/', permanent=False), name='index'),
 ]
 
 handler404 = 'API.views.resource_not_found'
