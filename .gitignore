@@ -1,5 +1,8 @@
 API/settings_local.py
 API/settings_local.pyc
+docs/_build/
+docs/_static/
+docs/_templates/
 *.sublime-project
 *.sublime.workspace
 *.pyc
