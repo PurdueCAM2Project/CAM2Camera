@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Authentication &mdash; PurdueCAM2Project/CAM2API 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PurdueCAM2Project/CAM2API 1.0 documentation" href="../index.html"/>
+        <link rel="next" title="Queries" href="Queries.html"/>
+        <link rel="prev" title="Welcome to CAM2API’s documentation!" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PurdueCAM2Project/CAM2API
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Queries.html">Queries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Adding_new_cameras.html">Adding new cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Updating_cameras.html">Updating cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Delating_cameras.html">Deleting cameras</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PurdueCAM2Project/CAM2API</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Authentication</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/sources/Authentication.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p>Welcome to the user documentation for the CAM2API. If you were unable to find the help you needed, or if you encountered an issue with out API, please let us know by email at cam2api&#64;ecn.purdue.edu (note: check this email address).</p>
+<p>The first thing you need to do when using the API is to <a class="reference external" href="#authentication">authenticate yourself</a> , and receive a JSON Web Token, which you will then provide to the request you send to the API. After that, depending on your permission level, you will be able to interact with the API. If you are a regular (non-admin) user, you will be able to <a class="reference external" href="#query">query our database</a>, and retrieve cameras&#8217; metadata that match your query. In addition to that, in case you are an admin user, you will also be able to <a class="reference external" href="#post">add new cameras</a> to the database, as well as <a class="reference external" href="#put">update the existing ones</a>, or <a class="reference external" href="#delete">delete cameras</a> from our database. For detailed description of each of these steps, read the corresponding section below.</p>
+<p><a name="authentication"></a></p>
+<div class="section" id="authentication">
+<span id="authentication"></span><h1>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h1>
+<p>The authentication of CAM2API implements the client credential flow and it makes it possible to authenticate your request to the CAM2API without providing the identification every time. The access token would be a JWT type token and only stay valid for one hour. If you would like to extend the valid time for the access token, you can either request from the refresh_token endpoint before the refreshing time limit of the current access token wears out(1 day) or simply request for a new access token with client_id &amp; client_secret.
+<img alt="" src="http://imgur.com/Q34yM2N" /></p>
+<ol class="simple">
+<li>Your application requests authorization</li>
+</ol>
+<p>The request is sent to the /token/ endpoint of the authentication service:
+POST http://127.0.0.1:8000/token/
+The request will include parameters in the request body:
+Request Body Parameters          Value
+client_id                        Required. Set it to the client_id you acquired after registering your app.
+client_secret                    Required. Set it to the client_secret you acquired after registering your app.</p>
+<p>Example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -X POST http://127.0.0.1:8000/token.json -d <span class="nv">client_id</span><span class="o">=</span>&lt;client_id&gt; -d <span class="nv">client_secret</span><span class="o">=</span>&lt;client_secret&gt;
+<span class="o">{</span>
+  <span class="s2">&quot;expires in&quot;</span>: <span class="m">3600</span>
+  <span class="s2">&quot;token&quot;</span>: <span class="s2">&quot;eyJ0eXA...O6YKF44&quot;</span>
+  <span class="s2">&quot;token_type&quot;</span>: <span class="s2">&quot;JWT&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li>Use the access token to access CAM2API</li>
+</ol>
+<p>The JWT token allow you to access to all endpoints of the CAM2API without authorizing client_id&amp;client_secret every time</p>
+<p>Example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -X GET -H <span class="s2">&quot;Authorization: JWT eyJ0eXA...O6YKF44&quot;</span> http://127.0.0.1:8000/cameras.json
+<span class="o">{</span>
+  <span class="s2">&quot;camera_id&quot;</span>: <span class="m">123</span>,
+  <span class="s2">&quot;city&quot;</span>: <span class="s2">&quot;Shinjuku-ku&quot;</span>,
+  <span class="s2">&quot;country&quot;</span>: <span class="s2">&quot;JP&quot;</span>
+  <span class="s2">&quot;lat&quot;</span>: <span class="m">35</span>.6895,
+  <span class="s2">&quot;lng&quot;</span>: <span class="m">139</span>.6917,
+  <span class="s2">&quot;source&quot;</span>: Google,
+  <span class="s2">&quot;source_url&quot;</span>: <span class="s2">&quot;www.google.com&quot;</span>,
+  <span class="s2">&quot;resolution_w&quot;</span>: <span class="m">1920</span>,
+  <span class="s2">&quot;resolution_h&quot;</span>: <span class="m">1080</span>,
+  ...
+<span class="o">}</span> 
+</pre></div>
+</div>
+<ol class="simple">
+<li>Refresh the access token for CAM2API</li>
+</ol>
+<p>The access token can only be refreshed within one day since it got issued.</p>
+<p>The request is sent to the /refresh_token/ endpoint of the authentication service.
+POST http://127.0.0.1:8000/refresh_token/
+The request will include parameter in the request body:
+Request Body Parameters                    Value
+token                                      Required. Set it to access token before the refreshing time goes off.</p>
+<p>Example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -X POST http://127.0.0.1:8000/refresh_token.json -d <span class="nv">token</span><span class="o">=</span><span class="s2">&quot;eyJ0eXA...O6YKF44&quot;</span> 
+<span class="o">{</span>
+  <span class="s2">&quot;token&quot;</span>: eyJ0eXA...QiOjE0OT^C<span class="s2">&quot;</span>
+<span class="s2">}</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Queries.html" class="btn btn-neutral float-right" title="Queries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Welcome to CAM2API’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Purdue CAM2 Project Developers.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

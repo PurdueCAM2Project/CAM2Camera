@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Queries &mdash; PurdueCAM2Project/CAM2API 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PurdueCAM2Project/CAM2API 1.0 documentation" href="../index.html"/>
+        <link rel="next" title="Adding new cameras" href="Adding_new_cameras.html"/>
+        <link rel="prev" title="Authentication" href="Authentication.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PurdueCAM2Project/CAM2API
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Authentication.html">Authentication</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Queries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#retrieve-all-cameras">Retrieve all cameras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#query-by-radius">Query by radius</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#query-by-number">Query by number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filters-a-name-filters-a">Filters <a name="filters"></a></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Adding_new_cameras.html">Adding new cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Updating_cameras.html">Updating cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Delating_cameras.html">Deleting cameras</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PurdueCAM2Project/CAM2API</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Queries</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/sources/Queries.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p><a name="query"></a></p>
+<div class="section" id="queries">
+<span id="queries"></span><h1>Queries<a class="headerlink" href="#queries" title="Permalink to this headline">¶</a></h1>
+<p>When querying the CAM2 database through our API, you can use three different methods:</p>
+<ul class="simple">
+<li>retrieve <a class="reference external" href="#all">all cameras</a> from the database</li>
+<li>retrieve all cameras in the certain <a class="reference external" href="#radius">radius</a> from a given geographical location</li>
+<li>retrieve certain <a class="reference external" href="#count">number of cameras</a> closest to a given geographical location
+In addition to these three different types of queries, you can apply certain filters to your query results, as described <a class="reference external" href="#filters">here</a>. Note: all examples below are performed using <a class="reference external" href="https://curl.haxx.se/">curl</a>, but any other software with similar capabilities can be used.
+<a name="all"></a></li>
+</ul>
+<div class="section" id="retrieve-all-cameras">
+<span id="retrieve-all-cameras"></span><h2>Retrieve all cameras<a class="headerlink" href="#retrieve-all-cameras" title="Permalink to this headline">¶</a></h2>
+<p>In order to get all cameras from the CAM2 database, you send a GET request to the API at the URI &lt;cam2_domain&gt;/cameras.json. The response to this request is a JSON representation of the cameras.
+For example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl --request <span class="s2">&quot;GET&quot;</span> &lt;cam2api_domain&gt;/cameras.json
+</pre></div>
+</div>
+<p><a name="radius"></a></p>
+</div>
+<div class="section" id="query-by-radius">
+<span id="query-by-radius"></span><h2>Query by radius<a class="headerlink" href="#query-by-radius" title="Permalink to this headline">¶</a></h2>
+<p>In case you want to retrieve all cameras that are in certain radius from a given geographical location, you need to send the query specifying latitude and longitude of that location, as well as radius in which you want these cameras to be. The response to this request is a list of cameras in a JSON representation. Note: For latitude we use negative number south of equator and positive north of equator, for longitude negative values west of Prime Meridian and positive values east of Prime Meridian. Unit for the radius is kilometers.
+Example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl --request <span class="s2">&quot;GET&quot;</span> &lt;cam2api_domain&gt;/query/lat<span class="o">=</span><span class="m">20</span>.12,lon<span class="o">=</span><span class="m">13</span>.621,radius<span class="o">=</span><span class="m">12</span>.json
+</pre></div>
+</div>
+<p>In this example, the result would be a JSON representation of all cameras that are in the 12 kilometers radius from the point 20.12 degrees North, 13.621 East. Note: latitude and longitude can have up to 4 decimal places, while radius has to be an integer.
+<a name="count"></a></p>
+</div>
+<div class="section" id="query-by-number">
+<span id="query-by-number"></span><h2>Query by number<a class="headerlink" href="#query-by-number" title="Permalink to this headline">¶</a></h2>
+<p>If you want to get certain number of cameras that are closest to a given geographical location, you need to send the query specifying latitude and longitude of that location, as well as the number of cameras that you want to receive. The response to this request is a list of cameras in a JSON representation. Note: For latitude we use negative number south of equator and positive north of equator, for longitude negative values west of Prime Meridian and positive values east of Prime Meridian.
+Example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl --request <span class="s2">&quot;GET&quot;</span> &lt;cam2api_domain&gt;/query/lat<span class="o">=</span>-11,lon<span class="o">=</span><span class="m">0</span>.4562,count<span class="o">=</span><span class="m">54</span>.json
+</pre></div>
+</div>
+<p>In this example, the result would be a JSON representation of 54 cameras that are closest to the point 11 degrees South, 0.4562 East. Note: latitude and longitude can have up to 4 decimal places, while count has to be an integer.</p>
+</div>
+<div class="section" id="filters-a-name-filters-a">
+<span id="filters-a-name-filters-a"></span><h2>Filters <a name="filters"></a><a class="headerlink" href="#filters-a-name-filters-a" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the queries described above, you can specify your request even further by adding some query parameters (filters). <strong>These filters are applied to all cameras in the database, after which your particular query is processed.</strong> You can specify as many query parameters as you want, and they will be connected by logical AND. The list of available filters:</p>
+<ul class="simple">
+<li><em>city</em> - city where cameras are located</li>
+<li><em>state</em> - state where cameras are located (only applicable to the US)</li>
+<li><em>country</em> - country where cameras are located</li>
+<li><em>camera_type</em> - type of the cameras (Non_IP or IP)</li>
+<li><em>lat</em> - latitude of the cameras</li>
+<li><em>lat_min</em> - minimum latitude of all cameras (everything north of the latitude)</li>
+<li><em>lat_max</em> - maximum latitude of all cameras (everything south of the latitude)</li>
+<li><em>lng</em> - longitude of the cameras</li>
+<li><em>lng_min</em> - minimum longitude of all cameras (everything east of the longitude)</li>
+<li><em>lng_max</em> - maximum longitude of all cameras (everything west of the longitude)</li>
+<li><em>framerate</em> - framerate of the cameras</li>
+<li><em>framerate_min</em> - minimum framerate of the cameras</li>
+<li><em>framerate_max</em> - maximum framerate of the cameras</li>
+<li><em>source</em> - provider of the cameras</li>
+<li><em>resolution_w</em> - resolution width of the cameras</li>
+<li><em>resolution_w_min</em> - minimum resolution width of the cameras</li>
+<li><em>resolution_w_max</em> - maximum resolution width of the cameras</li>
+<li><em>resolution_h</em> - resolution height of the cameras</li>
+<li><em>resolution_h_min</em> - minimum resolution height of the cameras</li>
+<li><em>resolution_h_max</em> - maximum resolution height of the cameras</li>
+<li><em>id</em> - camera id</li>
+<li><em>video</em> - is camera a video stream (True or False)</li>
+<li><em>outdoors</em> - is camera outdoors (True or False)</li>
+<li><em>traffic</em> - is camera recording traffic (True or False)</li>
+<li><em>inactive</em> - is camera inactive (True or False)</li>
+<li><em>added_before</em> - specifying the latest date that the cameras were added at (MM/DD/YYYY)</li>
+<li><em>added_after</em> - specifying the earliest date that the cameras were added at (MM/DD/YYYY)</li>
+<li><em>updated_before</em> - specifying the latest date that the cameras were updated at (MM/DD/YYYY)</li>
+<li><em>updated_after</em> - specifying the earliest date that the cameras were updated at (MM/DD/YYYY)</li>
+</ul>
+<p>Examples:</p>
+<p>Instead of just getting all cameras from the database, we may want to get all cameras from India that have framerate between 0.3 and 20 frames per second. In that case, we would send the following request:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl --request <span class="s2">&quot;GET&quot;</span> &lt;cam2api_domain&gt;/cameras.json?country<span class="o">=</span>Kenya<span class="p">&amp;</span><span class="nv">framerate_min</span><span class="o">=</span><span class="m">0</span>.3<span class="p">&amp;</span><span class="nv">framerate_max</span><span class="o">=</span><span class="m">20</span>
+</pre></div>
+</div>
+<p>If we want to get 54 cameras closest to the latitude -11 degrees and longitude 0.4562 degrees that have been added to the database after July 4th of 2017, we would send the following request:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl --request <span class="s2">&quot;GET&quot;</span> &lt;cam2api_domain&gt;/query/lat<span class="o">=</span>-11,lon<span class="o">=</span><span class="m">0</span>.4562,count<span class="o">=</span><span class="m">54</span>.json?added_after<span class="o">=</span><span class="m">07</span>/04/2017
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Adding_new_cameras.html" class="btn btn-neutral float-right" title="Adding new cameras" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Authentication.html" class="btn btn-neutral" title="Authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Purdue CAM2 Project Developers.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
