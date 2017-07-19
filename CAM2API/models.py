@@ -14,9 +14,9 @@ class IP(models.Model):
 class Camera(models.Model):
 	camera_id = models.PositiveIntegerField(unique=True)
 	# Geography:
-	city = models.CharField(max_length=30, null=True, blank=True)
+	city = models.CharField(max_length=100, null=True, blank=True)
 	state = models.CharField(max_length=12, null=True, blank=True)
-	country = models.CharField(max_length=50, null=True, blank=True)
+	country = models.CharField(max_length=100, null=True, blank=True)
 	lat = models.FloatField()
 	lng = models.FloatField()
     #geographical location of the Camera

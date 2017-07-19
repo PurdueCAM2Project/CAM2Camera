@@ -8,3 +8,4 @@ docs/_templates/
 *.sublime.workspace
 *.pyc
 venv
+CAM2API/migrations/*

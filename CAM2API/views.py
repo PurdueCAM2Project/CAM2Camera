@@ -1,8 +1,6 @@
 from CAM2API.models import Camera, Non_IP, IP
 from CAM2API.serializers import CameraSerializer, IPSerializer, NonIPSerializer
-
 from django.contrib.gis.geos import GEOSGeometry
-
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
@@ -12,9 +10,13 @@ from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from queue import PriorityQueue
 import datetime
+from django.db import IntegrityError, DataError
 
 class Home(APIView):
+	"""Handling GET request to the home page"""
+
 	def get(self, request, format=None):
+		"""Displaying user documentation link to the user"""
 		welcome_string = 'User documentation: \
         https://github.com/PurdueCAM2Project/CAM2Camera/wiki/User-documentation'
 		return Response(welcome_string)
@@ -34,12 +36,16 @@ class CameraList(APIView):
 		serializer = CameraSerializer(data=data)
 
 		if serializer.is_valid():
-			serializer.save()
-			print("Data added")
-			return Response(serializer.data)
+			try:
+				serializer.save()
+			except (IntegrityError, ValueError, TypeError, DataError) as exc:
+				return Response({'detail' : str(exc).splitlines()[0],
+								 'args' : ['arg1', 'arg2']},
+								status = status.HTTP_400_BAD_REQUEST)
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
 		else:
-			print("Data not added")
-			return Response(serializer.errors)
+			return Response(serializer.errors,
+							status=status.HTTP_400_BAD_REQUEST)
 
 	def convert_data(self,data):
 		"""Adds retrieval model for the camera to the data dictionary."""

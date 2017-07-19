@@ -75,7 +75,7 @@ class CameraSerializer(serializers.ModelSerializer):
 		for field in self.fields:
 			if field == "retrieval_model" and 'retrieval_model' in data.keys():
 				retrieval = data.get('retrieval_model', None)
-				if retrieval and 'ip' in retrieval.keys():
+				if 'ip' in retrieval.keys():
 					retrieval_model = IPSerializer(data=retrieval)
 					deserialized_data["camera_type"] = "IP"
 				elif 'url' in retrieval.keys():
@@ -127,17 +127,32 @@ class CameraSerializer(serializers.ModelSerializer):
 				pass
 			except ValidationError as exc:
 				errors.append(exc) 
-		if 'lat' in data.keys() and 'lng' in data.keys():
-			data = self.validate_geo_location(data)
 		if any(errors):
 			raise ValidationError(errors)
+		if 'lat' in data.keys() and 'lng' in data.keys():
+			data = self.validate_geo_location(data)
 		return data
 
 	def validate_framerate(self, framerate):
 		"""Checking if framerate value is in the appropriate range."""
 		if framerate != None and framerate < 0 and framerate > 60:
 			raise ValidationError('Cameras with framerates higher than 60 are \
-                                        not supported.')
+										not supported.')
+
+	def validate_lat(self, latitude):
+		"""Checking if the latitude value is in the appropriate range."""
+		if latitude and (float(latitude) < -90 or float(latitude) > 90):
+			raise ValidationError('Latitude out of the range [-90, 90]')
+
+	def validate_lng(self, longitude):
+		"""Checking if the longitude value is in the appropriate range."""
+		if longitude and (float(longitude) < -180 or float(longitude) > 180):
+			raise ValidationError('Longitude out of the range [-180, 180]')
+
+	def validate_retrieval_model(self, retrieval_model):
+		"""Checking if ip or url was provided by the user"""
+		if not retrieval_model:
+			raise ValidationError('Retrieval model for the camera not provided')
 
 	def validate_geo_location(self, data):
 		"""Retrieving geographical data from the lat and lon, if possible."""
