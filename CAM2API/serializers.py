@@ -3,7 +3,6 @@ from CAM2API.models import Camera, IP, Non_IP, Application
 from django.core.exceptions import ValidationError
 from django.contrib.gis.geos import GEOSGeometry
 from CAM2API.utils import (jwt_decode_handler, jwt_app_payload_handler, jwt_encode_handler, )
-from CAM2API.signals import auto_refresh
 from calendar import timegm
 import re
 import geocoder

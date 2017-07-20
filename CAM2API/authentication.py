@@ -4,7 +4,6 @@ from django.utils.six import text_type
 from rest_framework.authentication import TokenAuthentication, BaseAuthentication
 from django.contrib.auth.models import User 
 from CAM2API.models import Application
-from CAM2API.signals import auto_refresh
 import datetime 
 from django.utils import timezone
 from calendar import timegm
