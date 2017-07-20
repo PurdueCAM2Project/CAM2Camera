@@ -39,4 +39,4 @@ deploy:
   local_dir: docs/_build/html
   github_token: $GITHUB_TOKEN
   on:
-    branch: Error_handling
+    all_branches: true
