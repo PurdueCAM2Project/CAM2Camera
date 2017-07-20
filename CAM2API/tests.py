@@ -15,6 +15,7 @@ from django.db.utils import DataError
 from django.core.exceptions import ValidationError
 from random import randint
 from CAM2API.utils import jwt_app_payload_handler, jwt_encode_handler
+from django.utils import timezone
 import random
 import string
 import json
@@ -281,12 +282,12 @@ class DeletingCameras(CAM2APITest):
         self.assertEqual(response.status_code, requests.codes.not_found)
 
 
-'''
+
 class AuthTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         Application.objects.create_app({'app_name': 'ImageCore', 
-                                    'permission_level': 'Basic'})
+                                     'permission_level': 'Basic'})
 
     def test_register_app(self):
         self.client.credentials(HTTP_AUTHORIZATION='Basic ' + 'CAM2API')
@@ -327,9 +328,8 @@ class AuthTest(TestCase):
     def test_signature_expire(self):
         app = Application.objects.get(app_name='ImageCore')
         payload = jwt_app_payload_handler(app)
-        payload['exp'] = timezone.now() - datetime.timedelta(seconds=3000)
+        payload['exp'] = timezone.now() - datetime.timedelta(seconds=6000)
         token = jwt_encode_handler(payload)        
-        self.client.credentials(HTTP_AUTHORIZATION='JWT' + token)
+        self.client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
         response = self.client.get('/cameras/', format='json')
-        self.assertEqual(response.status_code, requests.codes.bad_request)
-'''
+        self.assertEqual(response.status_code, requests.codes.forbidden)

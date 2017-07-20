@@ -81,14 +81,12 @@ class CAM2JsonWebTokenAuthentication(BaseAuthentication):
         else:
             return None
         auth_header_prefix = api_settings.JWT_AUTH_HEADER_PREFIX
-
         if not auth:
             if api_settings.JWT_AUTH_COOKIE:
                 return request.COOKIES.get(api_settings.JWT_AUTH_COOKIE)
-            return None
+            raise exceptions.AuthenticationFailed("Authentication credentials were not provided")
         if str(auth[0], 'utf-8') != auth_header_prefix:
-            return None
-        
+            raise exceptions.AuthenticationFailed("Please provide JWT authentication credentials")
         if len(auth) == 1:
             raise exceptions.AuthenticationFailed("Invalid Authorization header. No credentials provided.")
         elif len(auth) > 2:

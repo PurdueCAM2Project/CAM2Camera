@@ -56,7 +56,6 @@ def jwt_app_payload_handler(app):
         'iss': 'localhost',
         'orig_iat': orig_iat
     }
-    #print(orig_iat)
     return payload
 
 def jwt_encode_handler(payload):
