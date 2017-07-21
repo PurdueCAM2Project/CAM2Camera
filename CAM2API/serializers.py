@@ -251,8 +251,6 @@ class RefreshAppTokenSerializer(serializers.Serializer):
         try:
             payload = jwt_decode_handler(token, False)
         except jwt.ExpiredSignature:
-            #raise serializers.ValidationError("Signature has been expired")
-            #auto_refresh.send(sender=None, token=token)
             pass
         except jwt.DecodeError:
             raise serializers.ValidationError("Decode Error")
@@ -262,8 +260,6 @@ class RefreshAppTokenSerializer(serializers.Serializer):
 
     def _check_app(self, payload):
         client_id = payload.get("id")
-        #print(client_id)
-        #print(payload)
         try:
             app = Application.objects.get(client_id=client_id)
         except Application.DoesNotExist:

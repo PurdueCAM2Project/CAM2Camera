@@ -64,7 +64,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'API.wsgi.application'
 
-#AUTH_USER_MODEL = 'CAM2API.Account'
 
 
 # Password validation
@@ -88,8 +87,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # REST_framework libraries
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        #'rest_framework.authentication.BasicAuthentication',
-        #'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -98,8 +95,6 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        #'rest_framework.permissions.IsAuthenticated',
-        #'CAM2API.permissions.CAM2APIPermission', 
     )
 }
 
@@ -138,13 +133,6 @@ LOGGING = {
 }
 
 ADMINS = [('Ryan', "dailey1@purdue.edu")]
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'wang50278668@gmail.com'
-EMAIL_HOST_PASSWORD = 'Wjc50278668'
-EMAIL_USE_TLS = True
 
 # Import settings specific to deployment
 try:

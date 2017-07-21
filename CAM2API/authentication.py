@@ -106,14 +106,7 @@ class CAM2JsonWebTokenAuthentication(BaseAuthentication):
         try:
             payload = jwt_decode_handler(jwt_value, True)
         except jwt.ExpiredSignature:
-            #(jwt_value, refresh_checker) = auto_refresh_token(jwt_value)
-            #if refresh_checker:
-            #   request.META["HTTP_AUTHORIZATION"] = "JWT {}".format(jwt_value)
-            #   return self.authenticae(request)
-            #else:
             raise exceptions.AuthenticationFailed('Signature has expired')
-            #token = auto_refresh.send(sender=None, token=jwt_value)
-
         except jwt.DecodeError:
             raise exceptions.AuthenticationFailed('Decode Error')
         except jwt.InvalidTokenError:
@@ -125,23 +118,6 @@ class CAM2JsonWebTokenAuthentication(BaseAuthentication):
 
         return (app, jwt_value)
 
-    # def authenticate_credentials(self, payload):
-    #   username = payload.get('username', None)
-
-    #   if username is None:
-    #       raise exceptions.AuthenticationFailed("Invalid Payload. Needs to contain username")
-
-    #   try:
-    #       user = User.objects.get_by_natural_key(username)
-    #   except User.DoesNotExist:
-    #       raise exceptions.AuthenticationFailed("Invalid Signature")
-
-    #   if not user.is_active:
-    #       raise exceptions.AuthenticationFailed("User is disabled")
-
-    #   register_user = RegisterUser.objects.get(user=user)
-
-    #   return register_user
 
     def authenticate_credentials(self, payload):
         """
