@@ -1,16 +1,26 @@
-from CAM2API.models import Camera, Non_IP, IP
-from CAM2API.serializers import CameraSerializer, IPSerializer, NonIPSerializer
-from django.contrib.gis.geos import GEOSGeometry
-from django.http import Http404
+# Import Models and Serializer
+from CAM2API.models import Camera, Non_IP, IP, Application
+from CAM2API.serializers import (CameraSerializer, IPSerializer, 
+                                NonIPSerializer, RegisterAppSerializer, 
+                                ObtainAppTokenSerializer, RefreshAppTokenSerializer)
+from CAM2API.authentication import CAM2JsonWebTokenAuthentication, CAM2HommieAuthentication
+from CAM2API.utils import ( jwt_encode_handler, jwt_decode_handler, jwt_app_payload_handler, )
+from CAM2API.permissions import CAM2Permission
+
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status, generics
+
+from django.contrib.gis.geos import GEOSGeometry
+from django.dispatch import receiver
+from django.http import Http404
 from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from queue import PriorityQueue
-import datetime
 from django.db import IntegrityError, DataError
+
+import datetime
 
 class Home(APIView):
     """Handling GET request to the home page"""
@@ -23,7 +33,9 @@ class Home(APIView):
 
 class CameraList(APIView):
     """Handles GET and POST requests to cam2api_domain/cameras."""
-
+    authentication_classes = (CAM2JsonWebTokenAuthentication, )
+    permission_classes = (CAM2Permission, )
+    
     def get(self, request, format=None):
         """Applies filter parameters to all cameras in the db returning JSON."""
         filtered_cameras = filter_cameras(self.request.query_params)
@@ -63,6 +75,8 @@ class CameraList(APIView):
 
 class CameraByID(APIView):
     """Handles GET, PUT and DELETE requests to cam2api_domain/<camera_id>."""
+    authentication_classes = (CAM2JsonWebTokenAuthentication, )
+    permission_classes = (CAM2Permission, )
 
     lookup_field = ['camera_id']
     lookup_url_kwargs = ['cd']
@@ -127,6 +141,8 @@ class CameraQuery(APIView):
     kilometers from <lat>, <lon> geo location. If query type is count, then
     <value> closest cameras to the <lat>, <lon> location will be returned.
     """
+    authentication_classes = (CAM2JsonWebTokenAuthentication, )
+    permission_classes = (CAM2Permission, )
 
     def get(self, request, lat, lon, query_type, value, format=None):
         """Returns JSON containing cameras that match the query."""
@@ -246,3 +262,64 @@ def filter_cameras(query_params):
             limit = datetime.datetime.strptime(query_params[param],time_format)
             cameras = cameras.filter(last_updated__gte = limit)
     return cameras
+
+class RegisterAppView(APIView):
+    """
+    Returns:
+    POST -- Create a new application object in the database with provided app_name and permission_level
+    """
+    authentication_classes = (CAM2HommieAuthentication, )
+
+    def post(self, request, format=None):
+        """
+        Create a new application object in the databse and returns the correspondent client_id and client_secret.
+        input request: HTTP request
+        return: client_id and client_secret with HTTP_201_CREATED / HTTP_400_BAD_REQUEST
+        """
+        data = request.data
+        serializer = RegisterAppSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ObtainAppTokenView(APIView):
+    """
+    Returns:
+    POST -- Dynamically generate the JSON Web Token encrypting the client_id and client_secret
+    """
+    def post(self, request, format=None):
+        """
+        Validate the client_id and client_secret and Response with the JSON Web Token
+        input request: HTTP request
+        return: JSON Web Token with HTTP_201_CREATED
+                / HTTP_400_BAD_REQUEST
+        """
+        data = request.data
+        serializer = ObtainAppTokenSerializer(data=data)
+        if serializer.is_valid():
+            token = self.generate_token(serializer.validated_data)
+            return Response({"token": token,
+                            "expires in": 60,
+                            "token type": "JWT" }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def generate_token(self, validated_data):
+        """
+        Generate the JSON Web Token with the validated client_id and client_secret
+        input reqeust: dict of validated client_id and client_secret
+        return: JSON Web Token
+        """
+        app = Application.objects.get(client_id=validated_data["client_id"])
+        payload = jwt_app_payload_handler(app)
+        token = jwt_encode_handler(payload)
+        return token
+
+
+class RefreshAppTokenView(APIView):
+    def post(self, request, format=None):
+        data = request.data
+        serializer = RefreshAppTokenSerializer(data=data)
+        if serializer.is_valid():
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

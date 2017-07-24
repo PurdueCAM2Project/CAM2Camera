@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.db import transaction
 from django.contrib.gis.gdal.error import GDALException
 from django.core.management.base import BaseCommand
-from CAM2API.models import Camera,  Non_IP,  IP
+from CAM2API.models import Camera,  Non_IP,  IP, Application
 from django.contrib.gis.geos import GEOSGeometry
 from django.utils import timezone
 from rest_framework.test import APITestCase
@@ -13,11 +13,16 @@ from rest_framework.reverse import reverse
 from psycopg2 import DataError
 from django.db.utils import DataError
 from django.core.exceptions import ValidationError
+from random import randint
+from CAM2API.utils import jwt_app_payload_handler, jwt_encode_handler
+from django.utils import timezone
 import random
 import string
 import json
 import os
 import requests
+import datetime
+
 
 class CAM2APITest(APITestCase):
     '''Class containing general functions used in other test classes'''
@@ -27,6 +32,13 @@ class CAM2APITest(APITestCase):
                           'camera_id': 1}
         self.non_ip_camera = {'lat': 35.6895 , 'lng': 139.6917,
                               'url': 'https://www.google.com/', 'camera_id': 2}
+        self.client = APIClient()
+        Application.objects.create_app({"app_name":'ImageCore', 
+            "permission_level":'Admin'})
+        app = Application.objects.get(app_name='ImageCore')
+        payload = jwt_app_payload_handler(app)
+        token = jwt_encode_handler(payload)
+        self.client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
 
     def send_post_request(self, url, data):
         response = self.client.post(url, data, format='json')
@@ -202,6 +214,7 @@ class QueryingCameras(CAM2APITest):
     '''Test all possible ways of querying the data'''
 
     def setUp(self):
+        super().setUp()
         camera_wl = {'lat': 40.4259, 'lng': -86.9081, 'ip': '10.0.0.2',
                           'camera_id': 2}
         camera_chi = {'lat': 41.8781, 'lng': -87.6298, 'ip': '10.0.0.3',
@@ -267,3 +280,56 @@ class DeletingCameras(CAM2APITest):
     def test_delete_DeletingNonExistingCamera_Unsuccessful(self):
         response = self.send_delete_request('/100/')
         self.assertEqual(response.status_code, requests.codes.not_found)
+
+
+
+class AuthTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        Application.objects.create_app({'app_name': 'ImageCore', 
+                                     'permission_level': 'Basic'})
+
+    def test_register_app(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic ' + 'CAM2API')
+        response = self.client.post('/register_app/', {'app_name': 'ImageCore' + str(randint(0,100)), 'permission_level':'Basic'}, format='json')
+        self.assertEqual(response.status_code, requests.codes.created)
+
+    def test_register_app_with_wrong_permission_level(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Basic ' + 'CAM2API')
+        response = self.client.post('/register_app/', {'app_name': 'ImageCore' + str(randint(0,100)), 'permission_level':'Basics'}, format='json')
+        self.assertEqual(response.status_code, requests.codes.bad_request)
+
+    def test_register_app_without_basic_auth(self):
+        response = self.client.post('/register_app/', {'app_name': 'ImageCore' + str(randint(0,100)), 'permission_level':'Basic'}, format='json')
+        self.assertEqual(response.status_code, requests.codes.forbidden)        
+
+    def test_obtain_token(self):
+        app = Application.objects.get(app_name='ImageCore')
+        client_id = app.client_id
+        client_secret = app.client_secret
+        response = self.client.post('/token/', {'client_id': client_id, 'client_secret': client_secret}, format='json')
+        self.assertEqual(response.status_code, requests.codes.created)
+
+    def test_obtain_token_with_wrong_client_secret(self):
+        app = Application.objects.get(app_name='ImageCore')
+        client_id = app.client_id
+        client_secret = 'wrong'
+        response = self.client.post('/token/', {'client_id': client_id, 'client_secret': client_secret}, format='json')
+        self.assertEqual(response.status_code, requests.codes.bad_request)        
+
+    def test_auth_view(self):
+        app = Application.objects.get(app_name='ImageCore')
+        payload = jwt_app_payload_handler(app)
+        token = jwt_encode_handler(payload)
+        self.client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
+        response = self.client.get('/cameras/', format='json')
+        self.assertEqual(response.status_code, requests.codes.ok) 
+
+    def test_signature_expire(self):
+        app = Application.objects.get(app_name='ImageCore')
+        payload = jwt_app_payload_handler(app)
+        payload['exp'] = timezone.now() - datetime.timedelta(seconds=6000)
+        token = jwt_encode_handler(payload)        
+        self.client.credentials(HTTP_AUTHORIZATION='JWT ' + token)
+        response = self.client.get('/cameras/', format='json')
+        self.assertEqual(response.status_code, requests.codes.forbidden)

@@ -11,6 +11,9 @@ urlpatterns = [
         .format(float_num, float_num) +
         r'(?P<query_type>(radius|count))=(?P<value>\d+)/$'
         , views.CameraQuery.as_view()),
+    url(r'^register_app/$', views.RegisterAppView.as_view(), name='register_app'),
+    url(r'^token/$', views.ObtainAppTokenView.as_view(), name="obtain_app_token"),
+    url(r'^refresh_token/$', views.RefreshAppTokenView.as_view(), name="refresh_token")
 ]
 
 # Adds format patterns to the API
