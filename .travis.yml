@@ -16,7 +16,7 @@ addons:
     - postgresql-9.5-postgis-2.3
 install:
 - pip install -r requirements.txt
-
+- pip install -r docs/requirements.txt
 before_script:
 - psql -c "CREATE DATABASE cam2api;" -U postgres
 - psql -c "CREATE USER cam2api WITH PASSWORD '123456';" -U postgres
@@ -29,4 +29,14 @@ script:
 - travis_retry python manage.py makemigrations
 - travis_retry python manage.py migrate
 - travis_retry python manage.py test
+- cd docs
+- make html
+- cd ..
 cache: pip
+deploy:
+- provider: pages
+  skip_cleanup: true
+  local_dir: docs/_build/html
+  github_token: $GITHUB_TOKEN
+  on:
+    all_branches: true
