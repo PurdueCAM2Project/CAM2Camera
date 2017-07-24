@@ -1,6 +1,3 @@
-API/settings_local.py
-API/settings_local.pyc
-CAM2API/migrations/0001_initial.py
 docs/_build/
 docs/_static/
 docs/_templates/
@@ -8,4 +5,3 @@ docs/_templates/
 *.sublime.workspace
 *.pyc
 venv
-CAM2API/migrations/*
