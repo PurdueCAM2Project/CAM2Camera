@@ -6,17 +6,15 @@ from CAM2API.serializers import (CameraSerializer, IPSerializer,
 from CAM2API.authentication import CAM2JsonWebTokenAuthentication, CAM2HommieAuthentication
 from CAM2API.utils import ( jwt_encode_handler, jwt_decode_handler, jwt_app_payload_handler, )
 from CAM2API.permissions import CAM2Permission
-
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-
 from django.contrib.gis.geos import GEOSGeometry
 from django.dispatch import receiver
 from django.http import Http404
 from django.db.models.query import QuerySet
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from queue import PriorityQueue
 from django.db import IntegrityError, DataError
 
@@ -27,9 +25,7 @@ class Home(APIView):
 
     def get(self, request, format=None):
         """Displaying user documentation link to the user"""
-        welcome_string = 'User documentation: \
-        https://github.com/PurdueCAM2Project/CAM2Camera/wiki/User-documentation'
-        return Response(welcome_string)
+        return redirect("https://purduecam2project.github.io/CAM2Camera/")
 
 class CameraList(APIView):
     """Handles GET and POST requests to cam2api_domain/cameras."""
