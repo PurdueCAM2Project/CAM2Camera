@@ -10,13 +10,11 @@ Welcome to CAM2API's documentation!
    :glob:
    :caption: User Documentation
 
-   user_sources/*
+   sources/*
 
 .. toctree::
    :glob:
    :caption: Developer Documentation
-
-   dev_sources/*
    
 
 
