@@ -85,10 +85,10 @@
               <p class="caption"><span class="caption-text">User Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sources/Authentication.html">Authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Queries.html">Queries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Adding_new_cameras.html">Adding new cameras</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Updating_cameras.html">Updating cameras</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Delating_cameras.html">Deleting cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/Delete.html">Deleting cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/Post.html">Adding new cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/Put.html">Updating cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/query.html">Queries</a></li>
 </ul>
 
             
@@ -154,21 +154,25 @@
             
   <div class="section" id="welcome-to-cam2api-s-documentation">
 <h1>Welcome to CAM2API&#8217;s documentation!<a class="headerlink" href="#welcome-to-cam2api-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>If you were unable to find the help you needed, or if you encountered an issue with out API, please let us know by email at <a class="reference external" href="mailto:cam2api&#37;&#52;&#48;ecn&#46;purdue&#46;edu">cam2api<span>&#64;</span>ecn<span>&#46;</span>purdue<span>&#46;</span>edu</a> (note: check this email address).</p>
+<p>The first thing you need to do when using the API is to authenticate yourself, and receive a JSON Web Token, which you will then provide to the request you send to the API. After that, depending on your permission level, you will be able to interact with the API. If you are a regular (non-admin) user, you will be able to query our database, and retrieve cameras&#8217; metadata that match your query. In addition to that, in case you are an admin user, you will also be able to add new cameras to the database, as well as update the existing ones, or delete cameras from our database. For detailed description of each of these steps, read the corresponding section below.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">User Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sources/Authentication.html">Authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Queries.html">Queries</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sources/Queries.html#retrieve-all-cameras">Retrieve all cameras</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sources/Queries.html#query-by-radius">Query by radius</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sources/Queries.html#query-by-number">Query by number</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sources/Queries.html#filters-a-name-filters-a">Filters <a name="filters"></a></a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/Delete.html">Deleting cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/Post.html">Adding new cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/Put.html">Updating cameras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/query.html">Queries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sources/query.html#retrieve-all-cameras">Retrieve all cameras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/query.html#query-by-radius">Query by radius</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/query.html#query-by-number">Query by number</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/query.html#filters-a-name-filters-a">Filters <a name="filters"></a></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Adding_new_cameras.html">Adding new cameras</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Updating_cameras.html">Updating cameras</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/Delating_cameras.html">Deleting cameras</a></li>
 </ul>
+</div>
+<div class="toctree-wrapper compound">
 </div>
 </div>
 

@@ -1,7 +1,3 @@
-Welcome to the user documentation for the CAM2API. If you were unable to find the help you needed, or if you encountered an issue with out API, please let us know by email at cam2api@ecn.purdue.edu (note: check this email address). 
-
-The first thing you need to do when using the API is to [authenticate yourself](#authentication) , and receive a JSON Web Token, which you will then provide to the request you send to the API. After that, depending on your permission level, you will be able to interact with the API. If you are a regular (non-admin) user, you will be able to [query our database](#query), and retrieve cameras' metadata that match your query. In addition to that, in case you are an admin user, you will also be able to [add new cameras](#post) to the database, as well as [update the existing ones](#put), or [delete cameras](#delete) from our database. For detailed description of each of these steps, read the corresponding section below.
-
 <a name="authentication"></a> 
 ## Authentication
 The authentication of CAM2API implements the client credential flow and it makes it possible to authenticate your request to the CAM2API without providing the identification every time. The access token would be a JWT type token and only stay valid for one hour. If you would like to extend the valid time for the access token, you can either request from the refresh_token endpoint before the refreshing time limit of the current access token wears out(1 day) or simply request for a new access token with client_id & client_secret.

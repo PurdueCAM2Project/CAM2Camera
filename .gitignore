@@ -1,6 +1,7 @@
 docs/_build/
 docs/_static/
 docs/_templates/
+docs/sources/
 *.sublime-project
 *.sublime.workspace
 *.pyc
