@@ -10,11 +10,13 @@ Welcome to CAM2API's documentation!
    :glob:
    :caption: User Documentation
 
-   sources/Authentication.md
-   sources/Queries.md
-   sources/Adding_new_cameras.md
-   sources/Updating_cameras.md
-   sources/Delating_cameras.md
+   user_sources/*
+
+.. toctree::
+   :glob:
+   :caption: Developer Documentation
+
+   dev_sources/*
    
 
 

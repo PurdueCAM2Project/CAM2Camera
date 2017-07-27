@@ -1,6 +1,7 @@
 dist: trusty
 install:
 - pip install -r docs/requirements.txt
+- git clone https://github.com/PurdueCAM2Project/CAM2Camera.wiki.git docs/sources
 script:
 - cd docs
 - make html
