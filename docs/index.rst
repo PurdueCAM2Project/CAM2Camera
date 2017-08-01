@@ -14,11 +14,16 @@ The first thing you need to do when using the API is to authenticate yourself, a
    :glob:
    :caption: User Documentation
 
-   sources/*
+   sources/Authentication.md
+   sources/query.md
 
 .. toctree::
    :glob:
    :caption: Developer Documentation
+   
+   sources/Post.md
+   sources/Put.md
+   sources/Delete.md
    
 
 
