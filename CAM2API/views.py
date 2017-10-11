@@ -29,8 +29,8 @@ class Home(APIView):
 
 class CameraList(APIView):
     """Handles GET and POST requests to cam2api_domain/cameras."""
-    authentication_classes = (CAM2JsonWebTokenAuthentication, )
-    permission_classes = (CAM2Permission, )
+    #authentication_classes = (CAM2JsonWebTokenAuthentication, )
+    #permission_classes = (CAM2Permission, )
     
     def get(self, request, format=None):
         """Applies filter parameters to all cameras in the db returning JSON."""
@@ -71,8 +71,8 @@ class CameraList(APIView):
 
 class CameraByID(APIView):
     """Handles GET, PUT and DELETE requests to cam2api_domain/<camera_id>."""
-    authentication_classes = (CAM2JsonWebTokenAuthentication, )
-    permission_classes = (CAM2Permission, )
+    #authentication_classes = (CAM2JsonWebTokenAuthentication, )
+    #permission_classes = (CAM2Permission, )
 
     lookup_field = ['camera_id']
     lookup_url_kwargs = ['cd']
