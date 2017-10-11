@@ -229,7 +229,7 @@ class QueryingCameras(CAM2APITest):
 
     def test_get_HomePage_Responds(self):
         response = self.send_get_request('/')
-        self.assertEqual(response.status_code, requests.codes.ok)
+        self.assertEqual(response.status_code, requests.codes.found)
 
     def test_get_QueryCameraByID_Queries(self):
         response = self.send_get_request('/2/')
