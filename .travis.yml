@@ -10,10 +10,10 @@ before_install:
 - sudo apt-get install postgis
 
 addons:
-  postgresql: 10
+  postgresql: 9.5
   apt:
     packages:
-    - postgresql-10-postgis-2.3
+    - postgresql-9.5-postgis-2.3
 install:
 - pip install -r requirements.txt
 - pip install -r docs/requirements.txt
