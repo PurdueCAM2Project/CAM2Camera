@@ -5,7 +5,7 @@ click==6.7
 decorator==4.0.11
 dj-database-url==0.4.2
 Django==1.10.5
-djangorestframework==3.5.4
+djangorestframework==3.11.2
 geocoder==1.22.6
 gunicorn==19.6.0
 idna==2.5
